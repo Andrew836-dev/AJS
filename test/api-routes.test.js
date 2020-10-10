@@ -93,7 +93,7 @@ describe("Express app export", function () {
         });
     });
 
-    it("returns status 307 and redirects when all fields are valid and user is saved", done => {
+    it("returns status 307 and redirects when all fields are valid and register function returns non-error", done => {
       appRequest
         .post("/api/signup")
         .redirects(0)
