@@ -3,6 +3,7 @@ const passport = require("./config/passport");
 const session = require("express-session");
 const express = require("express");
 const logger = require("morgan");
+const helmet = require("helmet");
 
 const app = express();
 // Serve up static assets (usually on heroku)
@@ -10,6 +11,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
+app.use(helmet());
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
