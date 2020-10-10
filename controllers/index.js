@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/project3";
 const defaultOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 
-function checkIfEmailInUse(email) {
+async function checkIfEmailInUse(email) {
   return db.User.findOne({ email }).then(dbUser => !!dbUser);
 }
 module.exports = {
@@ -11,10 +11,7 @@ module.exports = {
   disconnect: () => mongoose.disconnect(),
   getHostString: () => mongoose.connection.host ? mongoose.connection.host : "Not connected",
   registerNewUser: (name, email, password) => (
-    checkIfEmailInUse(email)
-      .then(emailIsUsed => emailIsUsed ?
-        Promise.reject(new Error("Email already in use"))
-        : db.User.create({ name, email }))
+    db.User.create({ name, email })
       .then(newUser => newUser.setPassword(password))
       .then(saltedUser => saltedUser.save())
       .catch(err => Promise.reject(err)

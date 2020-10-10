@@ -2,6 +2,7 @@ const controller = require("../controllers");
 const mongoose = require("mongoose");
 const db = require("../models");
 
+const { FIRST_USER } = require("./testUsers.json");
 const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI || "mongodb://localhost/test";
 const defaultMongoOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 const chai = require("chai");
@@ -84,13 +85,7 @@ describe("Controller export", function () {
   });
 
   describe("registerNewUser() function", function () {
-    const FIRST_USERNAME = "Teddy";
-    const FIRST_EMAIL = "teddy@example.com";
-    const FIRST_PASSWORD = "teddypass";
-    const SECOND_USERNAME = "John";
-    const SECOND_EMAIL = "john.gammel@gmail.com";
-    const SECOND_PASSWORD = "joHnGL1v3s";
-    const UNUSED_PASSWORD = "NotAPassword";
+    // const UNUSED_PASSWORD = "NotAPassword";
 
     this.beforeAll(done => {
       mongoose
@@ -109,10 +104,10 @@ describe("Controller export", function () {
 
     it("Registers a new user", done => {
       controller
-        .registerNewUser(FIRST_USERNAME, FIRST_EMAIL, FIRST_PASSWORD)
+        .registerNewUser(FIRST_USER.name, FIRST_USER.email, FIRST_USER.password)
         .then(createdUser => {
-          const nameReg = new RegExp(FIRST_USERNAME);
-          const emailReg = new RegExp(FIRST_EMAIL);
+          const nameReg = new RegExp(FIRST_USER.name);
+          const emailReg = new RegExp(FIRST_USER.email);
           expect(createdUser.name).to.match(nameReg);
           expect(createdUser.email).to.match(emailReg);
           done()
@@ -122,12 +117,45 @@ describe("Controller export", function () {
 
     it("Fails if the email is already in the system", done => {
       db.User
-        .create({ name: FIRST_USERNAME, email: FIRST_EMAIL })
+        .create({ name: FIRST_USER.name, email: FIRST_USER.email })
+        .then(originalUser => originalUser.setPassword())
+        .then(saltedOriginalUser => saltedOriginalUser.save())
         .then(() => controller
-          .registerNewUser(FIRST_USERNAME, FIRST_EMAIL, FIRST_PASSWORD))
+          .registerNewUser(FIRST_USER.name, FIRST_USER.email, FIRST_USER.password))
+        .then(() => done(new Error("Duplicate user successfully created")))
         .catch(err => {
           expect(err).to.be.instanceOf(Error);
           done();
+        });
+    });
+
+    it("Fails if the name field is empty", done => {
+      controller
+        .registerNewUser("", FIRST_USER.email, FIRST_USER.password)
+        .then(done)
+        .catch(err => {
+          expect(err).to.be.instanceOf(Error);
+          done()
+        });
+    });
+
+    it("Fails if the email field is empty", done => {
+      controller
+        .registerNewUser(FIRST_USER.name, "", FIRST_USER.password)
+        .then(done)
+        .catch(err => {
+          expect(err).to.be.instanceOf(Error);
+          done()
+        });
+    });
+
+    it("Fails if the password field is empty", done => {
+      controller
+        .registerNewUser(FIRST_USER.name, FIRST_USER.email, "")
+        .then(done)
+        .catch(err => {
+          expect(err).to.be.instanceOf(Error);
+          done()
         });
     });
   });

@@ -1,5 +1,7 @@
+const { body, validationResult } = require("express-validator");
+const PASSWORD_MIN_LENGTH = 5;
 // Requiring our models and passport as we've configured it
-controllers = require("../controllers");
+const controllers = require("../controllers");
 const passport = require("../config/passport");
 
 module.exports = function (app) {
@@ -14,16 +16,24 @@ module.exports = function (app) {
     });
   });
 
-  // Route for signing up a user. The user's password is automatically hashed and stored securely thanks to
-  // how we configured our User Model. If the user is created successfully, proceed to log the user in,
+  // Route for signing up a user. The user data is validated and sanitized thanks to express-validator middleware.
+  // The user's password is automatically hashed and stored securely thanks to passport-local-mongoose middleware.
+  // If the user is created successfully, proceed to log the user in,
   // otherwise send back an error
-  app.post("/api/signup", (req, res) => {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields required" });
+  app.post("/api/signup", [
+    body('email').trim().isEmail().normalizeEmail(),
+    body('name').trim().notEmpty().escape(),
+    body('password').trim().isLength({ min: PASSWORD_MIN_LENGTH })
+  ], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+    const { name, email, password } = req.body;
     controllers.registerNewUser(name, email, password)
-      .then(() => res.redirect(307, "/api/login"))
+      .then((response) => {
+        return res.redirect(307, "/api/login")
+      })
       .catch(err => res.status(401).json(err));
   });
 
