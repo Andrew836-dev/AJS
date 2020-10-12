@@ -6,16 +6,24 @@ const defaultOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCre
 async function checkIfEmailInUse(email) {
   return db.User.findOne({ email }).then(dbUser => !!dbUser);
 }
+
+async function checkIfNameInUse(name) {
+  return db.User.findOne({ name }).then(dbuser => !!dbuser);
+}
+
+async function registerNewUser(name, email, password) {
+  return db.User.create({ name, email })
+    .then(newUser => newUser.setPassword(password))
+    .then(saltedUser => saltedUser.save())
+    .catch(err => Promise.reject(err));
+}
+
+
 module.exports = {
   connect: (uri = MONGODB_URI, options = defaultOptions) => mongoose.connect(uri, options),
   disconnect: () => mongoose.disconnect(),
   getHostString: () => mongoose.connection.host ? mongoose.connection.host : "Not connected",
-  registerNewUser: (name, email, password) => (
-    db.User.create({ name, email })
-      .then(newUser => newUser.setPassword(password))
-      .then(saltedUser => saltedUser.save())
-      .catch(err => Promise.reject(err)
-      )
-  ),
-  checkIfEmailInUse
+  registerNewUser,
+  checkIfEmailInUse,
+  checkIfNameInUse
 }
