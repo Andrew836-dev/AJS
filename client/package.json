@@ -4,14 +4,35 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "axios": "^0.20.0",
+    "classnames": "^2.2.6",
+    "grommet": "^2.15.1",
+    "grommet-icons": "^4.5.0",
+    "polished": "^4.0.2",
+    "prop-types": "^15.7.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-scripts": "^3.4.3"
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.3",
+    "styled-components": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
