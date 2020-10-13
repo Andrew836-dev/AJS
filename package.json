@@ -29,7 +29,6 @@
     "sinon": "^9.2.0"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "express": "^4.16.3",
     "express-acl": "^2.0.8",
     "express-session": "^1.17.1",
