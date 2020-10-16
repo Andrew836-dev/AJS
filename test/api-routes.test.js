@@ -1,4 +1,5 @@
-const chai = require("chai")
+/* eslint-disable no-undef */
+const chai = require("chai");
 const http = require("chai-http");
 const { expect } = chai;
 
@@ -13,7 +14,7 @@ const appRequest = chai.request(expressApp);
 
 describe("Express app export", function () {
   this.beforeAll(done => {
-    appRequest.keepOpen()
+    appRequest.keepOpen();
     done();
   });
 
@@ -52,7 +53,7 @@ describe("Express app export", function () {
     it("returns status 400 with an empty email field", done => {
       appRequest
         .post("/api/signup")
-        .send({ "email": "", "name": FIRST_USER.name, "password": FIRST_USER.password })
+        .send({ email: "", name: FIRST_USER.name, password: FIRST_USER.password })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);
@@ -63,7 +64,7 @@ describe("Express app export", function () {
     it("returns status 400 with an empty name field", done => {
       appRequest
         .post("/api/signup")
-        .send({ "email": FIRST_USER.email, "name": "", "password": FIRST_USER.password })
+        .send({ email: FIRST_USER.email, name: "", password: FIRST_USER.password })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);
@@ -74,7 +75,7 @@ describe("Express app export", function () {
     it("returns status 400 with an all whitespace name field", done => {
       appRequest
         .post("/api/signup")
-        .send({ "email": FIRST_USER.email, "name": "    ", "password": FIRST_USER.password })
+        .send({ email: FIRST_USER.email, name: "    ", password: FIRST_USER.password })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);
@@ -85,7 +86,7 @@ describe("Express app export", function () {
     it("returns status 400 with an empty password field", done => {
       appRequest
         .post("/api/signup")
-        .send({ "email": FIRST_USER.email, "name": FIRST_USER.name, "password": "" })
+        .send({ email: FIRST_USER.email, name: FIRST_USER.name, password: "" })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);
@@ -100,7 +101,7 @@ describe("Express app export", function () {
         .send(FIRST_USER)
         .end((err, res) => {
           if (err) done(err);
-          expect(res).header("location", "/api/login")
+          expect(res).header("location", "/api/login");
           expect(res).to.have.status(307);
           done();
         });
@@ -108,7 +109,7 @@ describe("Express app export", function () {
 
     it("returns status 401 if the register function returns an error", done => {
       sinon.restore();
-      sinon.stub(controller, "registerNewUser").callsFake(() => Promise.reject({}))
+      sinon.stub(controller, "registerNewUser").callsFake(() => Promise.reject(Error("Throwing an error")));
       appRequest
         .post("/api/signup")
         .send(FIRST_USER)

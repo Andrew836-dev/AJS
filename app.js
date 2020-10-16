@@ -22,7 +22,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 require("./routes/api-routes")(app);
 
 // Send every request to the React app

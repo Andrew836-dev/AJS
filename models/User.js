@@ -17,16 +17,29 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  last: {
+  lastLogin: {
     type: Date,
     default: Date.now
+  },
+  currentLogin: {
+    type: Date,
+    default: Date.now
+  },
+  role: {
+    type: String,
+    default: "User"
   }
 });
 
-UserSchema.plugin(passportLocalMongoose, {usernameField: "email"});
+UserSchema.methods.updateLoginAndSave = function () {
+  const currentTime = Date.now();
+  this.lastLogin = this.currentLogin;
+  this.currentLogin = currentTime;
+  return this.save();
+};
+
+UserSchema.plugin(passportLocalMongoose, { usernameField: "email", lastLoginField: "lastLogin" });
 
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;
-
-

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const controller = require("../controllers");
 const mongoose = require("mongoose");
 const db = require("../models");
@@ -33,7 +34,7 @@ describe("Controller export", function () {
         .connect(TEST_MONGODB_URI, defaultMongoOptions)
         .then(() => {
           const stringUnderTest = controller.getHostString();
-          expect(TEST_MONGODB_URI).to.include(stringUnderTest)
+          expect(TEST_MONGODB_URI).to.include(stringUnderTest);
           done();
         })
         .catch(done);
@@ -80,7 +81,7 @@ describe("Controller export", function () {
         .then(() => {
           expect(mongoose.connection._readyState).to.equal(mongoose.STATES.disconnected);
           done();
-        }).catch(done)
+        }).catch(done);
     });
   });
 
@@ -110,7 +111,7 @@ describe("Controller export", function () {
           const emailReg = new RegExp(FIRST_USER.email);
           expect(createdUser.name).to.match(nameReg);
           expect(createdUser.email).to.match(emailReg);
-          done()
+          done();
         })
         .catch(done);
     });
@@ -135,7 +136,7 @@ describe("Controller export", function () {
         .then(done)
         .catch(err => {
           expect(err).to.be.instanceOf(Error);
-          done()
+          done();
         });
     });
 
@@ -145,7 +146,7 @@ describe("Controller export", function () {
         .then(done)
         .catch(err => {
           expect(err).to.be.instanceOf(Error);
-          done()
+          done();
         });
     });
 
@@ -155,7 +156,7 @@ describe("Controller export", function () {
         .then(done)
         .catch(err => {
           expect(err).to.be.instanceOf(Error);
-          done()
+          done();
         });
     });
   });
