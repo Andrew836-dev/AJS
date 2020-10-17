@@ -16,6 +16,7 @@ module.exports = function (app) {
     controllers.updateLastLoginById(req.user._id);
     // Sending back a password, even a hashed password, isn't a good idea
     res.json({
+      role: req.user.role,
       email: req.user.email,
       name: req.user.name,
       _id: req.user._id
