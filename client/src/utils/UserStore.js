@@ -6,7 +6,6 @@ const UserContext = createContext();
 const { Provider } = UserContext;
 
 const reducer = (state, action) => {
-  console.log(action.type);
   switch (action.type) {
     case LOADING:
       return {
@@ -19,7 +18,8 @@ const reducer = (state, action) => {
         loading: false,
         email: action.email,
         name: action.name,
-        role: action.role
+        role: action.role,
+        id: action.id
       }
     case LOGOUT:
       return {
@@ -27,7 +27,8 @@ const reducer = (state, action) => {
         loading: false,
         email: "",
         name: "",
-        role: GUEST
+        role: GUEST,
+        id: ""
       }
     default:
       return state;
@@ -38,7 +39,8 @@ const UserProvider = ({ value = [], ...props }) => {
     email: "",
     name: "",
     role: GUEST,
-    loading: false
+    loading: false,
+    id: ""
   });
 
   return <Provider value={[state, dispatch]} {...props} />;
