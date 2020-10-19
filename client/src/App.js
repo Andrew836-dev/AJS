@@ -8,12 +8,11 @@
 
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Box, Button, Heading, Grommet } from "grommet";
-import { Notification } from "grommet-icons";
+import { Grommet } from "grommet";
 import { UserProvider } from "./utils/UserStore";
-import API from "./utils/API";
+import NavBar from "./components/NavBar";
 import Landing from "./pages/Landing";
-import Profile from "./pages/Profile";
+import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
 import Login from "./pages/Login";
 
@@ -30,29 +29,12 @@ const theme = {
   },
 };
 
-const AppBar = props => (
-  <Box
-    tag="header"
-    direction="row"
-    align="center"
-    justify="between"
-    background="brand"
-    pad={{ left: "medium", right: "small", vertical: "small" }}
-    elevation="medium"
-    style={{ zIndex: "1" }}
-    {...props}
-  />
-)
-
 function App() {
   return (
     <UserProvider>
       <Grommet theme={theme}>
-        <AppBar>
-          <Heading level="3" margin="none" onClick={() => API.userSignUp("Teddy", "Teddy@example.com", "teddypass")}>My App</Heading>
-          <Button icon={<Notification />} onClick={() => { API.userLogin("Teddy@example.com", "teddypass") }} />
-        </AppBar>
         <Router>
+          <NavBar />
           <Switch>
             <Route exact path="/">
               <Landing />
@@ -63,8 +45,8 @@ function App() {
             <Route exact path="/login">
               <Login />
             </Route>
-            <Route exact path="/profile">
-              <Profile />
+            <Route exact path={["/profile", "/profile/:userName"]}>
+              <ProfileWrapper />
             </Route>
           </Switch>
         </Router>
