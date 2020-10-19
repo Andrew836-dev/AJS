@@ -1,5 +1,12 @@
 import axios from "axios";
 
+const getUserSessionData = () => {
+  return axios
+    .get("/api/user_data")
+    .then(response => response.data)
+    .catch(Promise.reject);
+}
+
 const userLogin = (email, password) => {
   if (email.trim() && password) {
     const loginData = {
@@ -28,6 +35,7 @@ const userSignUp = (name, email, password) => {
 }
 
 const API = {
+  getUserSessionData,
   userLogin,
   userSignUp
 }
