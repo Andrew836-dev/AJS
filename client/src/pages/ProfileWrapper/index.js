@@ -5,7 +5,7 @@ import UserProfile from "../../components/UserProfile";
 
 function ProfileWrapper() {
   const { userName } = useParams();
-  const [userContext, userDispatch] = useUserContext();
+  const [userContext] = useUserContext();
 
   return (!userName
     ? <UserProfile profileName={userContext.name} />
