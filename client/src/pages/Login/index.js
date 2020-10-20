@@ -23,7 +23,7 @@ function Login() {
       .then(dbResponse => {
         userDispatch({ ...dbResponse, type: LOGIN });
         setErrorStatus({ color: "green", message: "Successfully logged in" });
-        history.push("/code");
+        history.push("/profile/" + dbResponse.name);
       })
       .catch(err => {
         console.log(err);
@@ -43,7 +43,7 @@ function Login() {
       <input name="password" type="password" />
       <input type="submit" value="Login" {...buttonDisabled} />
     </form>
-    {errorStatus.message ? <p>{errorStatus.message}</p> : null}
+    {errorStatus.message ? <p style={{ backgroundColor: errorStatus.color }}>{errorStatus.message}</p> : null}
   </>;
 }
 
