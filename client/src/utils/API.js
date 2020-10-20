@@ -1,5 +1,12 @@
 import axios from "axios";
 
+const getUserProfileData = name => {
+  return axios
+    .get("/api/profile/" + name)
+    .then(({ data }) => data)
+    .catch(console.log);
+}
+
 const getUserSessionData = () => {
   return axios
     .get("/api/user_data")
@@ -35,6 +42,7 @@ const userSignUp = (name, email, password) => {
 }
 
 const API = {
+  getUserProfileData,
   getUserSessionData,
   userLogin,
   userSignUp
