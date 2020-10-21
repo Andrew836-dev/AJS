@@ -22,7 +22,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-require("./routes/user-api-routes")(app);
+// adding all API routes here
+require("./routes")(app);
 
 // Send every request to the React app
 // Define any API routes before this runs
