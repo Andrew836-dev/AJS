@@ -19,8 +19,16 @@ async function checkIfNameInUse (name) {
     .then(dbuser => !!dbuser);
 }
 
+async function getCodeById (id) {
+  return db.Snippet.findById(id);
+}
+
 async function getUserData (name) {
   return db.User.findOne({ name });
+}
+
+async function registerNewCode (authorId, codeArray) {
+  return db.Snippet.create({ author: authorId, body: codeArray }).then(console.log);
 }
 
 async function registerNewUser (name, email, password) {
@@ -28,6 +36,10 @@ async function registerNewUser (name, email, password) {
     .then(newUser => newUser.setPassword(password))
     .then(saltedUser => saltedUser.save())
     .catch(err => Promise.reject(err));
+}
+
+async function updateCodeById (codeId, codeArray) {
+  return db.Snippet.findByIdAndUpdate(codeId, { body: codeArray, lastEdited: Date.now() });
 }
 
 async function updateLastLoginById (id) {
@@ -42,8 +54,11 @@ module.exports = {
   connect: (uri = MONGODB_URI, options = defaultMongoOptions) =>
     mongoose.connect(uri, options),
   disconnect: () => mongoose.disconnect(),
+  getCodeById,
   getHostString: () => mongoose.connection.host ? mongoose.connection.host : "Not connected",
   getUserData,
+  registerNewCode,
   registerNewUser,
+  updateCodeById,
   updateLastLoginById
 };
