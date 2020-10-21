@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const db = {
-  User: require("./User")
+  User: require("./User"),
+  Snippet: require("./Snippet")
 }
 
 module.exports = db;
