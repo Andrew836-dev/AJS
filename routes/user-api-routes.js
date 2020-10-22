@@ -57,20 +57,15 @@ module.exports = function (app) {
 
   app.get("/api/profile/:name", (req, res) => {
     const nameParam = req.params.name;
-    controllers.getUserData(nameParam)
-      .then(dbUser => {
+    controllers.getUserByName(nameParam)
+      .then(({ _doc: dbUser }) => {
         if (!dbUser) {
           return res.status(404).end();
         }
         if (req.user && req.user.name === nameParam) {
           return res.json(dbUser);
         }
-        res.json({
-          role: dbUser.role,
-          name: dbUser.name,
-          signupDate: dbUser.signupDate,
-          lastLogin: dbUser.lastLogin
-        });
+        res.json({ ...dbUser, email: "" });
       });
   });
 
@@ -82,7 +77,6 @@ module.exports = function (app) {
     } else {
       // Otherwise send back the user's email and id
       // Sending back a password, even a hashed password, isn't a good idea
-      console.log(req.user);
       res.json({
         email: req.user.email,
         name: req.user.name,
