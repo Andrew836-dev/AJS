@@ -47,9 +47,9 @@ function NavBar() {
       {menuVisible
         ? (<>
           <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
-          {userContext.name
+          {userContext.username
             ? <>
-              <NavLink to={"/profile/" + userContext.name} onClick={hideMenu}>Profile</NavLink>
+              <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>Profile</NavLink>
               <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
             </>
             : <>

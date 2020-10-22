@@ -8,7 +8,7 @@ function ProfileWrapper() {
   const [userContext] = useUserContext();
 
   return (!username
-    ? <UserProfile profileName={userContext.name} />
+    ? <UserProfile profileName={userContext.username} />
     : <UserProfile profileName={username} />)
 }
 

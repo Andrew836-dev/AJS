@@ -75,7 +75,7 @@ describe("Express app export", function () {
     it("returns status 400 with an empty password field", done => {
       appRequest
         .post("/api/signup")
-        .send({ name: FIRST_USER.name, password: "" })
+        .send({ username: FIRST_USER.username, password: "" })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);

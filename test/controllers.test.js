@@ -113,7 +113,7 @@ describe("Controller export", function () {
         .catch(done);
     });
 
-    it("Fails if the name field is empty", done => {
+    it("Fails if the username field is empty", done => {
       controller
         .registerNewUser("", FIRST_USER.password)
         .then(done)
