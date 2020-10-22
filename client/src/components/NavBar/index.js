@@ -19,7 +19,6 @@ function NavBar() {
       .then(userData => {
         const keys = Object.keys(userData);
         if (keys.some(key => userData[key] !== userContext[key])) {
-          console.log("state change");
           userDispatch({
             type: LOGIN,
             ...userData
@@ -53,7 +52,10 @@ function NavBar() {
               <NavLink to={"/profile/" + userContext.name} onClick={hideMenu}>Profile</NavLink>
               <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
             </>
-            : <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>}
+            : <>
+              <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
+              <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>
+            </>}
         </>)
         : null}
     </>

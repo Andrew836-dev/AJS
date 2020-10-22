@@ -72,7 +72,6 @@ function Editor() {
     }
     API.saveCode(codeId, codeToSave)
       .then(dbCode => {
-        console.log(dbCode);
         setLoading(false);
       })
       .catch(dbErr => {

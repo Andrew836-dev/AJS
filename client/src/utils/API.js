@@ -35,10 +35,10 @@ const saveCode = (id, codeArray) => {
     .catch(Promise.reject);
 }
 
-const userLogin = (email, password) => {
-  if (email.trim() && password) {
+const userLogin = (username, password) => {
+  if (username.trim() && password) {
     const loginData = {
-      email,
+      username,
       password
     }
     return axios
@@ -48,17 +48,19 @@ const userLogin = (email, password) => {
   }
 }
 
-const userSignUp = (name, email, password) => {
-  if (name.trim() && email.trim() && password) {
+const userSignUp = (username, password) => {
+  if (username.trim() && password) {
     const signUpData = {
-      email: email.trim(),
-      name: name.trim(),
+      username: username.trim(),
       password
     }
     return axios
       .post("/api/signup", signUpData)
       .then(({ data }) => data)
-      .catch(Promise.reject);
+      .catch(err => {
+        console.log(err);
+        Promise.reject({ error: "Couldn't sign up" })
+      });
   }
 }
 

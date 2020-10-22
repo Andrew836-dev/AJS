@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 const controller = require("../controllers");
 const mongoose = require("mongoose");
-const db = require("../models");
 
 const { FIRST_USER } = require("./testUsers.json");
 const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI || "mongodb://localhost/test";
@@ -105,44 +104,18 @@ describe("Controller export", function () {
 
     it("Registers a new user", done => {
       controller
-        .registerNewUser(FIRST_USER.name, FIRST_USER.email, FIRST_USER.password)
+        .registerNewUser(FIRST_USER.username, FIRST_USER.password)
         .then(createdUser => {
-          const nameReg = new RegExp(FIRST_USER.name);
-          const emailReg = new RegExp(FIRST_USER.email);
-          expect(createdUser.name).to.match(nameReg);
-          expect(createdUser.email).to.match(emailReg);
+          const nameReg = new RegExp(FIRST_USER.username);
+          expect(createdUser.username).to.match(nameReg);
           done();
         })
         .catch(done);
     });
 
-    it("Fails if the email is already in the system", done => {
-      db.User
-        .create({ name: FIRST_USER.name, email: FIRST_USER.email })
-        .then(originalUser => originalUser.setPassword())
-        .then(saltedOriginalUser => saltedOriginalUser.save())
-        .then(() => controller
-          .registerNewUser(FIRST_USER.name, FIRST_USER.email, FIRST_USER.password))
-        .then(() => done(new Error("Duplicate user successfully created")))
-        .catch(err => {
-          expect(err).to.be.instanceOf(Error);
-          done();
-        });
-    });
-
     it("Fails if the name field is empty", done => {
       controller
-        .registerNewUser("", FIRST_USER.email, FIRST_USER.password)
-        .then(done)
-        .catch(err => {
-          expect(err).to.be.instanceOf(Error);
-          done();
-        });
-    });
-
-    it("Fails if the email field is empty", done => {
-      controller
-        .registerNewUser(FIRST_USER.name, "", FIRST_USER.password)
+        .registerNewUser("", FIRST_USER.password)
         .then(done)
         .catch(err => {
           expect(err).to.be.instanceOf(Error);
@@ -152,7 +125,7 @@ describe("Controller export", function () {
 
     it("Fails if the password field is empty", done => {
       controller
-        .registerNewUser(FIRST_USER.name, FIRST_USER.email, "")
+        .registerNewUser(FIRST_USER.username, "")
         .then(done)
         .catch(err => {
           expect(err).to.be.instanceOf(Error);

@@ -8,15 +8,9 @@ const defaultMongoOptions = {
   useFindAndModify: false
 };
 
-async function checkIfEmailInUse (email) {
+async function checkIfNameInUse (username) {
   // returns Boolean
-  return db.User.findOne({ email })
-    .then(dbUser => !!dbUser);
-}
-
-async function checkIfNameInUse (name) {
-  // returns Boolean
-  return getUserByName(name)
+  return getUserByName(username)
     .then(dbUser => !!dbUser);
 }
 
@@ -24,8 +18,8 @@ async function getCodeByAuthorId (id) {
   return db.Snippet.find({ author: id });
 }
 
-async function getCodeByAuthorName (name) {
-  return getUserByName(name)
+async function getCodeByAuthorName (username) {
+  return getUserByName(username)
     .then(({ _id }) => getCodeByAuthorId(_id));
 }
 
@@ -33,16 +27,17 @@ async function getCodeById (id) {
   return db.Snippet.findById(id);
 }
 
-async function getUserByName (name) {
-  return db.User.findOne({ name });
+async function getUserByName (username) {
+  return db.User.findOne({ username });
 }
 
 async function registerNewCode (authorId, codeArray) {
   return db.Snippet.create({ author: authorId, body: codeArray });
 }
 
-async function registerNewUser (name, email, password) {
-  return db.User.create({ name, email })
+async function registerNewUser (username, password) {
+  console.log(username, password);
+  return db.User.create({ username })
     .then(newUser => newUser.setPassword(password))
     .then(saltedUser => saltedUser.save())
     .catch(err => Promise.reject(err));
@@ -59,7 +54,6 @@ async function updateLastLoginById (id) {
 }
 
 module.exports = {
-  checkIfEmailInUse,
   checkIfNameInUse,
   connect: (uri = MONGODB_URI, options = defaultMongoOptions) =>
     mongoose.connect(uri, options),

@@ -4,13 +4,16 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  name: {
+  username: {
     type: String,
-    required: "Please enter a name"
+    unique: true,
+    required: "Please enter a Username"
+  },
+  displayName: {
+    type: String
   },
   email: {
     type: String,
-    unique: true,
     validate: /.+@.+\..+/
   },
   signupDate: {
@@ -38,7 +41,7 @@ UserSchema.methods.updateLoginAndSave = function () {
   return this.save();
 };
 
-UserSchema.plugin(passportLocalMongoose, { usernameField: "email", lastLoginField: "lastLogin" });
+UserSchema.plugin(passportLocalMongoose, { lastLoginField: "lastLogin" });
 
 const User = mongoose.model("User", UserSchema);
 

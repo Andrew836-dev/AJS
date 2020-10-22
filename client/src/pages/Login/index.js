@@ -12,23 +12,23 @@ function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const email = formRef.current.elements.email.value.trim();
+    const username = formRef.current.elements.username.value.trim();
     const password = formRef.current.elements.password.value;
-    if (!email) return setErrorStatus({ color: "red", message: "Email cannot be blank" })
+    if (!username) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
     if (!password) return setErrorStatus({ color: "red", message: "Password cannot be blank" });
     setErrorStatus({ color: "green", message: "Checking your details" });
     userDispatch({ type: LOADING });
     API
-      .userLogin(email, password)
+      .userLogin(username, password)
       .then(dbResponse => {
         userDispatch({ ...dbResponse, type: LOGIN });
         setErrorStatus({ color: "green", message: "Successfully logged in" });
-        history.push("/profile/" + dbResponse.name);
+        history.push("/profile/" + dbResponse.username);
       })
       .catch(err => {
         console.log(err);
         userDispatch({ type: LOGOUT });
-        setErrorStatus({ color: "red", message: "Your email and/or password is incorrect" });
+        setErrorStatus({ color: "red", message: "Your name and/or password is incorrect" });
       });
   }
 
@@ -37,8 +37,8 @@ function Login() {
   return <>
     Login
     <form ref={formRef} onSubmit={handleSubmit}>
-      <label htmlFor="email">Email</label>
-      <input name="email" type="email" />
+      <label htmlFor="username">Username</label>
+      <input name="username" type="name" />
       <label htmlFor="password">Password</label>
       <input name="password" type="password" />
       <input type="submit" value="Login" {...buttonDisabled} />

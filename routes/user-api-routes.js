@@ -10,8 +10,7 @@ module.exports = function (app) {
   // Otherwise the user will be sent an error
   app.post("/api/login",
     [
-      body("email").trim().isEmail().normalizeEmail(),
-      body("name").trim().notEmpty().escape(),
+      body("username").trim().notEmpty().escape(),
       body("password").isLength({ min: PASSWORD_MIN_LENGTH }),
       passport.authenticate("local")
     ],
@@ -20,8 +19,7 @@ module.exports = function (app) {
       // Sending back a password, even a hashed password, isn't a good idea
       res.json({
         role: req.user.role,
-        email: req.user.email,
-        name: req.user.name,
+        username: req.user.username,
         id: req.user._id
       });
     });
@@ -32,8 +30,7 @@ module.exports = function (app) {
   // otherwise send back an error
   app.post("/api/signup",
     [
-      body("email").trim().isEmail().normalizeEmail(),
-      body("name").trim().notEmpty().escape(),
+      body("username").trim().notEmpty().escape(),
       body("password").isLength({ min: PASSWORD_MIN_LENGTH })
     ],
     (req, res) => {
@@ -41,8 +38,8 @@ module.exports = function (app) {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-      const { name, email, password } = req.body;
-      controllers.registerNewUser(name, email, password)
+      const { username, password } = req.body;
+      controllers.registerNewUser(username, password)
         .then(() => {
           return res.redirect(307, "/api/login");
         })
@@ -55,17 +52,14 @@ module.exports = function (app) {
     res.redirect("/");
   });
 
-  app.get("/api/profile/:name", (req, res) => {
-    const nameParam = req.params.name;
-    controllers.getUserByName(nameParam)
+  app.get("/api/profile/:username", (req, res) => {
+    const usernameParam = req.params.username;
+    controllers.getUserByName(usernameParam)
       .then(({ _doc: dbUser }) => {
         if (!dbUser) {
           return res.status(404).end();
         }
-        if (req.user && req.user.name === nameParam) {
-          return res.json(dbUser);
-        }
-        res.json({ ...dbUser, email: "" });
+        res.json(dbUser);
       });
   });
 
@@ -73,13 +67,12 @@ module.exports = function (app) {
   app.get("/api/user_data", (req, res) => {
     if (!req.user) {
       // The user is not logged in, send back the default GUEST options
-      res.json({ email: "", name: "", role: "GUEST", id: "" });
+      res.json({ username: "", role: "GUEST", id: "" });
     } else {
-      // Otherwise send back the user's email and id
+      // Otherwise send back the user's name and id
       // Sending back a password, even a hashed password, isn't a good idea
       res.json({
-        email: req.user.email,
-        name: req.user.name,
+        username: req.user.username,
         role: req.user.role,
         id: req.user._id
       });

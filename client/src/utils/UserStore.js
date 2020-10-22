@@ -16,8 +16,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        email: action.email,
-        name: action.name,
+        username: action.username,
         role: action.role,
         id: action.id
       }
@@ -25,8 +24,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        email: "",
-        name: "",
+        username: "",
         role: GUEST,
         id: ""
       }
@@ -36,8 +34,7 @@ const reducer = (state, action) => {
 }
 const UserProvider = ({ value = [], ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
-    email: "",
-    name: "",
+    username: "",
     role: GUEST,
     loading: false,
     id: ""

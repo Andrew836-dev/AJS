@@ -30,9 +30,9 @@ describe("Express app export", function () {
     this.beforeEach(() => {
       sinon
         .stub(controller, "registerNewUser")
-        .callsFake((name, email, password) => {
+        .callsFake((name, password) => {
           // console.log("stub called");
-          return Promise.resolve({ name, email, password });
+          return Promise.resolve({ name, password });
         });
     });
 
@@ -50,21 +50,10 @@ describe("Express app export", function () {
         });
     });
 
-    it("returns status 400 with an empty email field", done => {
-      appRequest
-        .post("/api/signup")
-        .send({ email: "", name: FIRST_USER.name, password: FIRST_USER.password })
-        .end((err, res) => {
-          if (err) done(err);
-          expect(res).to.have.status(400);
-          done();
-        });
-    });
-
     it("returns status 400 with an empty name field", done => {
       appRequest
         .post("/api/signup")
-        .send({ email: FIRST_USER.email, name: "", password: FIRST_USER.password })
+        .send({ name: "", password: FIRST_USER.password })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);
@@ -75,7 +64,7 @@ describe("Express app export", function () {
     it("returns status 400 with an all whitespace name field", done => {
       appRequest
         .post("/api/signup")
-        .send({ email: FIRST_USER.email, name: "    ", password: FIRST_USER.password })
+        .send({ name: "    ", password: FIRST_USER.password })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);
@@ -86,7 +75,7 @@ describe("Express app export", function () {
     it("returns status 400 with an empty password field", done => {
       appRequest
         .post("/api/signup")
-        .send({ email: FIRST_USER.email, name: FIRST_USER.name, password: "" })
+        .send({ name: FIRST_USER.name, password: "" })
         .end((err, res) => {
           if (err) done(err);
           expect(res).to.have.status(400);

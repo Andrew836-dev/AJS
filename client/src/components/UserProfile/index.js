@@ -4,23 +4,23 @@ import API from "../../utils/API";
 import moment from "moment";
 
 function UserProfile(props) {
-  const name = props.profileName;
+  const username = props.profileName;
   const [profileData, setProfileData] = useState({
     role: "GUEST",
-    name: name,
+    username: username || "",
     signupDate: "",
     lastLogin: ""
   });
   const [snippetData, setSnippetData] = useState([]);
 
   useEffect(() => {
-    if (name) {
+    if (username) {
       API
-        .getUserProfileData(name)
+        .getUserProfileData(username)
         .then(userData => {
           if (userData) {
             API
-              .getUserSnippets(userData.name)
+              .getUserSnippets(userData.username)
               .then(userSnippets => {
                 setSnippetData(userSnippets);
               })
@@ -29,24 +29,21 @@ function UserProfile(props) {
               });
             setProfileData(userData);
           } else {
-            setProfileData(prevState => ({ ...prevState, name: "There was an error, please try refreshing" }));
+            setProfileData(prevState => ({ ...prevState, username: "There was an error, please try refreshing" }));
           }
         })
         .catch(err => {
           console.log("Profile error", err);
         });
     }
-  }, [name]);
+  }, [username]);
 
-  return (!name
+  return (!username
     ? <p>Can't show a profile without a name. Please log in or view someone elses profile</p>
     : <>
       <div>
         <img src="https://placekitten.com/150/150" alt="" height="150px" />
-        <p>{profileData.name}</p>
-        {(profileData.email
-          ? <p>Your Email Address: {profileData.email}</p>
-          : <></>)}
+        <p>{profileData.username}</p>
         <p>Last Login: {profileData.lastLogin}</p>
         <p>Signup date: {profileData.signupDate}</p>
       </div>

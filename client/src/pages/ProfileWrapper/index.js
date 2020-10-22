@@ -4,12 +4,12 @@ import { useUserContext } from "../../utils/UserStore";
 import UserProfile from "../../components/UserProfile";
 
 function ProfileWrapper() {
-  const { userName } = useParams();
+  const { username } = useParams();
   const [userContext] = useUserContext();
 
-  return (!userName
+  return (!username
     ? <UserProfile profileName={userContext.name} />
-    : <UserProfile profileName={userName} />)
+    : <UserProfile profileName={username} />)
 }
 
 export default ProfileWrapper;

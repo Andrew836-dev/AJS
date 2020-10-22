@@ -1,10 +1,12 @@
 {
   "FIRST_USER": {
+    "username": "Teddy",
     "name": "Teddy",
     "email": "teddy@example.com",
     "password": "teddypass"
   },
   "SECOND_USER": {
+    "username": "John",
     "name": "John",
     "email": "john.gammel@gmail.com",
     "password": "joHnGL1v3s"

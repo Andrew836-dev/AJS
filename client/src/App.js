@@ -15,6 +15,7 @@ import Landing from "./pages/Landing";
 import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const theme = {
   global: {
@@ -45,7 +46,10 @@ function App() {
             <Route exact path="/login">
               <Login />
             </Route>
-            <Route exact path={["/profile", "/profile/:userName"]}>
+            <Route exact path="/register">
+              <Register />
+            </Route>
+            <Route exact path={["/profile", "/profile/:username"]}>
               <ProfileWrapper />
             </Route>
           </Switch>
