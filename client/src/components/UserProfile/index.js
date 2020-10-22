@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../../utils/API";
+import moment from "moment";
 
 function UserProfile(props) {
   const name = props.profileName;
@@ -9,21 +11,29 @@ function UserProfile(props) {
     signupDate: "",
     lastLogin: ""
   });
+  const [snippetData, setSnippetData] = useState([]);
 
   useEffect(() => {
     if (name) {
       API
         .getUserProfileData(name)
         .then(userData => {
-          console.log(userData);
           if (userData) {
+            API
+              .getUserSnippets(userData.name)
+              .then(userSnippets => {
+                setSnippetData(userSnippets);
+              })
+              .catch(err => {
+                console.log("Snippets error", err);
+              });
             setProfileData(userData);
           } else {
             setProfileData(prevState => ({ ...prevState, name: "There was an error, please try refreshing" }));
           }
         })
         .catch(err => {
-          console.log("catch", err);
+          console.log("Profile error", err);
         });
     }
   }, [name]);
@@ -45,9 +55,17 @@ function UserProfile(props) {
         <p>Profiles Followed: 0</p>
         <p>Total Followers: 0</p>
       </div>
-      <div>
-        <p>Your Code</p>
-      </div>
+      {snippetData.length
+        ? <div>
+          {snippetData.map(snippet => <div key={snippet._id}>
+            <Link to={"/code/" + snippet._id}>View</Link>
+            <p>{snippet.mode}</p>
+            <p>{snippet.title}</p>
+            <p>{snippet.body[0]}</p>
+            <p>{moment(snippet.lastEdited).local().toString()}</p>
+          </div>)}
+        </div>
+        : null}
     </>)
 }
 
