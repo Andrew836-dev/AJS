@@ -4,7 +4,8 @@ const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/project3";
 const defaultMongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 };
 
 async function checkIfEmailInUse (email) {
@@ -15,20 +16,29 @@ async function checkIfEmailInUse (email) {
 
 async function checkIfNameInUse (name) {
   // returns Boolean
-  return db.User.findOne({ name })
-    .then(dbuser => !!dbuser);
+  return getUserByName(name)
+    .then(dbUser => !!dbUser);
+}
+
+async function getCodeByAuthorId (id) {
+  return db.Snippet.find({ author: id });
+}
+
+async function getCodeByAuthorName (name) {
+  return getUserByName(name)
+    .then(({ _id }) => getCodeByAuthorId(_id));
 }
 
 async function getCodeById (id) {
   return db.Snippet.findById(id);
 }
 
-async function getUserData (name) {
+async function getUserByName (name) {
   return db.User.findOne({ name });
 }
 
 async function registerNewCode (authorId, codeArray) {
-  return db.Snippet.create({ author: authorId, body: codeArray }).then(console.log);
+  return db.Snippet.create({ author: authorId, body: codeArray });
 }
 
 async function registerNewUser (name, email, password) {
@@ -54,9 +64,11 @@ module.exports = {
   connect: (uri = MONGODB_URI, options = defaultMongoOptions) =>
     mongoose.connect(uri, options),
   disconnect: () => mongoose.disconnect(),
+  getCodeByAuthorId,
+  getCodeByAuthorName,
   getCodeById,
   getHostString: () => mongoose.connection.host ? mongoose.connection.host : "Not connected",
-  getUserData,
+  getUserByName,
   registerNewCode,
   registerNewUser,
   updateCodeById,
