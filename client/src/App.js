@@ -39,7 +39,7 @@ function App() {
             <Route exact path="/">
               <Landing />
             </Route>
-            <Route exact path={["/code", "/code/:language"]}>
+            <Route exact path={["/code", "/code/:id"]}>
               <Editor />
             </Route>
             <Route exact path="/login">

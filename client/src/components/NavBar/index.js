@@ -47,7 +47,7 @@ function NavBar() {
       </Box>
       {menuVisible
         ? (<>
-          <NavLink to="/code/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
+          <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
           {userContext.name
             ? <>
               <NavLink to={"/profile/" + userContext.name} onClick={hideMenu}>Profile</NavLink>
