@@ -8,7 +8,7 @@
 
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Grommet } from "grommet";
+import { Box, Grommet, ResponsiveContext } from "grommet";
 import { UserProvider } from "./utils/UserStore";
 import NavBar from "./components/NavBar";
 import Landing from "./pages/Landing";
@@ -20,7 +20,7 @@ import Register from "./pages/Register";
 const theme = {
   global: {
     colors: {
-      brand: "#228BE6"
+      brand: "#333333"
     },
     font: {
       family: 'Roboto',
@@ -33,27 +33,33 @@ const theme = {
 function App() {
   return (
     <UserProvider>
-      <Grommet theme={theme}>
-        <Router>
-          <NavBar />
-          <Switch>
-            <Route exact path="/">
-              <Landing />
-            </Route>
-            <Route exact path={["/code", "/code/:id"]}>
-              <Editor />
-            </Route>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/register">
-              <Register />
-            </Route>
-            <Route exact path={["/profile", "/profile/:username"]}>
-              <ProfileWrapper />
-            </Route>
-          </Switch>
-        </Router>
+      <Grommet theme={theme} full>
+          <Router>
+            <Box fill>
+              <NavBar />
+              <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
+                <Box flex align='center' justify='center'>
+                  <Switch>
+                    <Route exact path="/">
+                      <Landing />
+                    </Route>
+                    <Route exact path={["/code", "/code/:id"]}>
+                      <Editor />
+                    </Route>
+                    <Route exact path="/login">
+                      <Login />
+                    </Route>
+                    <Route exact path="/register">
+                      <Register />
+                    </Route>
+                    <Route exact path={["/profile", "/profile/:username"]}>
+                      <ProfileWrapper />
+                    </Route>
+                  </Switch>
+                </Box>
+              </Box>
+            </Box>
+          </Router>
       </Grommet>
     </UserProvider>
   );

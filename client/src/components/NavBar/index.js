@@ -2,8 +2,15 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useUserContext } from "../../utils/UserStore";
 
-import { Box, Button, Heading } from "grommet";
-import { Menu } from "grommet-icons";
+import {
+  Box,
+  Button,
+  Collapsible,
+  Heading,
+  Layer,
+  ResponsiveContext
+} from "grommet";
+import { Menu, FormClose } from "grommet-icons";
 
 import API from "../../utils/API";
 import { LOGIN } from "../../utils/actions";
@@ -28,38 +35,80 @@ function NavBar() {
       .catch(console.log);
   }, [userContext, userDispatch]);
   return (
-    <>
-      <Box
-        tag="header"
-        direction="row"
-        align="center"
-        justify="between"
-        background="brand"
-        pad={{ left: "medium", right: "small", vertical: "small" }}
-        elevation="medium"
-        style={{ zIndex: "1" }}
-      >
-        <Heading level="3" margin="none">
-          <NavLink to="/" onClick={hideMenu}>AJS</NavLink>
-        </Heading>
-        <Button icon={<Menu />} onClick={toggleMenuVisibility} />
-      </Box>
-      {menuVisible
-        ? (<>
-          <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
-          {userContext.username
-            ? <>
-              <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>Profile</NavLink>
-              <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
-            </>
-            : <>
-              <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
-              <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>
-            </>}
-        </>)
-        : null}
-    </>
-  )
+    <Box
+      tag="header"
+      direction="row"
+      align="center"
+      justify="between"
+      background="brand"
+      pad={{ left: "medium", right: "small", vertical: "small" }}
+      elevation="medium"
+      style={{ zIndex: "1" }}
+    >
+      <Heading level="3" margin="none">
+        <NavLink to="/" onClick={hideMenu}>AJS</NavLink>
+      </Heading>
+      <ResponsiveContext.Consumer>
+        {size => (<>
+          {(!menuVisible || size !== "small") ? (
+            <Collapsible direction="horizontal" open={menuVisible}>
+              <Box
+                width='small'
+                background='light-2'
+                elevation='small'
+                align='center'
+                justify='center'
+              >
+                <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
+                {userContext.username
+                  ? <>
+                    <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
+                    <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
+                  </>
+                  : <>
+                    <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
+                    <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>
+                  </>}
+              </Box>
+            </Collapsible>
+          ) : (
+              <Layer>
+                <Box
+                  background='light-2'
+                  tag='header'
+                  justify='end'
+                  align='center'
+                  direction='row'
+                >
+                  <Button
+                    icon={<FormClose />}
+                    onClick={hideMenu}
+                  />
+                </Box>
+                <Box
+                  fill
+                  background="light-2"
+                  align="center"
+                  justify="center"
+                >
+                  <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
+                  {userContext.username
+                    ? <>
+                      <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
+                      <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
+                    </>
+                    : <>
+                      <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
+                      <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>
+                    </>}
+                </Box>
+              </Layer>
+            )}
+        </>
+        )}
+      </ResponsiveContext.Consumer>
+      <Button icon={<Menu />} onClick={toggleMenuVisibility} />
+    </Box>)
 }
 
 export default NavBar;

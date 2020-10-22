@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { Box, Button, Form, FormField, TextInput, MaskedInput } from "grommet";
 import { useUserContext } from "../../utils/UserStore";
 import API from "../../utils/API";
 import { LOGIN, LOADING, LOGOUT } from "../../utils/actions";
@@ -6,14 +7,14 @@ import { useHistory } from "react-router-dom";
 
 function Login() {
   const [errorStatus, setErrorStatus] = useState({ color: "none", message: "" });
+  const [value, setValue] = useState({ username: "", password: "" });
   const [userContext, userDispatch] = useUserContext();
-  const formRef = useRef();
   const history = useHistory();
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const username = formRef.current.elements.username.value.trim();
-    const password = formRef.current.elements.password.value;
+  function handleSubmit(formValue) {
+    const { username, password } = formValue;
+    //const username = formRef.current.elements.username.value.trim();
+    //const password = formRef.current.elements.password.value;
     if (!username) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
     if (!password) return setErrorStatus({ color: "red", message: "Password cannot be blank" });
     setErrorStatus({ color: "green", message: "Checking your details" });
@@ -32,18 +33,31 @@ function Login() {
       });
   }
 
-  const buttonDisabled = { disabled: userContext.loading }
 
   return <>
-    Login
-    <form ref={formRef} onSubmit={handleSubmit}>
-      <label htmlFor="username">Username</label>
-      <input name="username" type="name" />
-      <label htmlFor="password">Password</label>
-      <input name="password" type="password" />
-      <input type="submit" value="Login" {...buttonDisabled} />
-    </form>
-    {errorStatus.message ? <p style={{ backgroundColor: errorStatus.color }}>{errorStatus.message}</p> : null}
+    <Form
+      value={value}
+      onChange={nextValue => setValue(nextValue)}
+      onSubmit={({ value }) => handleSubmit(value)}
+      validate="blur"
+      onValidate={console.log}
+    >
+      <FormField name="username" htmlfor="text-input-id" label="Username">
+        <TextInput
+          id="text-input-id"
+          name="username"
+          required="true"
+          validate={{ regexp: /(\s)/g, status: "info", message: "message" }}
+        />
+      </FormField>
+      <FormField name="password" htmlfor="text-input-id" label="Password">
+        <TextInput type="password" id="text-input-id" name="password" required="true" />
+      </FormField>
+      <Box direction="row" gap="medium">
+        <Button type="submit" primary label="Log in" disabled={userContext.loading} />
+      </Box>
+    </Form>
+    {errorStatus.message && (<p style={{ backgroundColor: errorStatus.color }}>{errorStatus.message}</p>)}
   </>;
 }
 
