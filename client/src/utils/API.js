@@ -21,6 +21,13 @@ const getUserSessionData = () => {
     .catch(Promise.reject);
 }
 
+const getUserSnippets = name => {
+  return axios
+    .get("/api/author/" + name)
+    .then(({ data }) => data)
+    .catch(Promise.reject);
+}
+
 const saveCode = (id, codeArray) => {
   return axios
     .post("/api/code/" + id, codeArray)
@@ -59,6 +66,7 @@ const API = {
   getCodebyId,
   getUserProfileData,
   getUserSessionData,
+  getUserSnippets,
   saveCode,
   userLogin,
   userSignUp
