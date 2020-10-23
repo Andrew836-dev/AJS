@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useUserContext } from "../../utils/UserStore";
 
 import {
@@ -63,7 +63,7 @@ function NavBar() {
                 {userContext.username
                   ? <>
                     <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
-                    <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
+                    <Link to="/logout" onClick={hideMenu}>Log Out</Link>
                   </>
                   : <>
                     <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
