@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-
-import { GUEST, USER } from "../../utils/roles";
-import API from "../../utils/API";
 import { useUserContext } from "../../utils/UserStore";
 import { useParams, useHistory } from "react-router-dom";
-//import CodeWrapper from "../../components/CodeWrapper";
+import { Box, Button, Markdown } from "grommet";
+import { Save, New, Copy } from "grommet-icons";
+import CodeWrapper from "../../components/CodeWrapper";
 import CodeMirror from "@uiw/react-codemirror";
 import "codemirror/keymap/sublime";
 import "codemirror/theme/monokai.css";
+import { GUEST } from "../../utils/roles";
+import API from "../../utils/API";
+import safeParse from "../../utils/safeParse";
 
 function Editor() {
   const defaultCode = "let greeting = 'Hello World!', secondary;\nfunction helloWorld() {\n  console.log(greeting);\n}\nsecondary = 2;\nhelloWorld();\n";
@@ -16,48 +18,51 @@ function Editor() {
   const editorRef = useRef();
   const initialCodeRef = useRef("Loading");
   const [loading, setLoading] = useState(true);
+  const [savedDetails, setSavedDetails] = useState({author:"", title: "", })
   const [codeState, setCodeState] = useState("");
   const [userState] = useUserContext();
   let language = "javascript";
 
   useEffect(() => {
     if (!codeId) {
-      if (typeof history.location.state === "string") {
-        initialCodeRef.current = history.location.state
+      if (history.location.state) {
+        const { message } = history.location.state;
+        setCodeState(message);
       } else {
-        initialCodeRef.current = (
+        const initialCode = (
           localStorage.getItem("codeText")
           || defaultCode
         );
+        setCodeState(initialCode);
       }
       setLoading(false);
     } else if (codeId.length !== 24) {
-      history.replace("/code", `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n`);
+      history.replace("/code", { message: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
     } else {
-      initialCodeRef.current = "Checking server for code " + codeId;
+      setCodeState("Checking server for code " + codeId);
       API
         .getCodebyId(codeId)
         .then(dbCode => {
           setCodeState(dbCode.body.join("\n"));
           setLoading(false);
-          initialCodeRef.current = dbCode.body.join("\n");
           editorRef.current.editor.setValue(dbCode.body.join("\n"));
         })
         .catch(() => {
-          history.push("/code", `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n`)
+          history.push("/code", { message: `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n` })
         });
     }
 
-  }, [codeId, history])
+  }, [codeId, history, history.location])
 
   function handleCodeChange(editor, change) {
+    if (change.origin === "setValue") return;
     let editorValue = editor.getValue();
     localStorage.setItem("codeText", editorValue);
-    if (change.origin === "setValue") return;
     setCodeState(editorValue);
   }
 
   function saveCode() {
+    if (userState.role === GUEST) return;
     const codeToSave = editorRef.current.editor.getValue().split("\n");
     setLoading(true);
     if (!codeId) {
@@ -71,31 +76,35 @@ function Editor() {
         });
     }
     API.saveCode(codeId, codeToSave)
-      .then(dbCode => {
-        setLoading(false);
-      })
+      .then(() => setLoading(false))
       .catch(dbErr => {
         console.log(dbErr);
         setLoading(false);
       });
   }
 
-  const codeToDisplay = initialCodeRef.current;
-  return <div>
-    <CodeMirror
-      ref={editorRef}
-      value={codeToDisplay}
-      options={{
-        theme: "monokai",
-        // keyMap: "sublime",
-        mode: language,
-      }}
-      onChange={handleCodeChange}
-    />{userState.role === GUEST
-      ? null
-      : <button onClick={saveCode}>Save</button>}
-    <p>{loading}</p>
-  </div>
+  return <Box fill>
+    <Box direction="row" justify="end" margin={{ right: "small" }}>
+      <Button icon={<New />} onClick={() => history.push("/code", { message: defaultCode })} />
+      <Button icon={<Copy />} onClick={() => history.push("/code", { message: codeState })} />
+      <Button icon={<Save />} onClick={saveCode} disabled={userState.role !== GUEST} />
+    </Box>
+    <Box>
+      <CodeMirror
+        ref={editorRef}
+        value={codeState}
+        options={{
+          theme: "monokai",
+          // keyMap: "sublime",
+          mode: language,
+        }}
+        onChange={handleCodeChange}
+      />
+    </Box>
+    <Box>
+      {/* <CodeWrapper code={safeParse(codeState)} /> */}
+    </Box>
+  </Box>
 }
 
 export default Editor;
