@@ -48,6 +48,13 @@ const userLogin = (username, password) => {
   }
 }
 
+const userLogout = () => {
+  return axios
+    .get("/logout")
+    .then(() => ({ message: "Successfully logged out." }))
+    .catch(Promise.reject);
+}
+
 const userSignUp = (username, password) => {
   if (username.trim() && password) {
     const signUpData = {
@@ -71,6 +78,7 @@ const API = {
   getUserSnippets,
   saveCode,
   userLogin,
+  userLogout,
   userSignUp
 }
 
