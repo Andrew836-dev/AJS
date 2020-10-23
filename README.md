@@ -6,7 +6,7 @@ A tool for sharing and understanding web development concepts
 1. [Screenshots](#Screenshots)
 2. [Usage](#Usage)
 3. [License](#License)
-5. [Questions](#Questions)
+4. [Questions](#Questions)
 ## Screenshots
 None yet, coming soon!
 ## Usage

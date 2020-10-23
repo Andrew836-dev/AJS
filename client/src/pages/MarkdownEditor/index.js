@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUserContext } from "../../utils/UserStore";
 import { useParams, useHistory } from "react-router-dom";
-import { Box, Button, TextInput, Markdown } from "grommet";
+import { Box, Button, TextInput, Text, Markdown } from "grommet";
 import { Save, New, Copy } from "grommet-icons";
 import CodeMirror from "@uiw/react-codemirror";
 import "codemirror/keymap/sublime";
@@ -10,7 +10,7 @@ import { GUEST } from "../../utils/roles";
 import API from "../../utils/API";
 
 function MarkdownEditor() {
-  const defaultCode = "#Hello!\n1. This is a **markdown** *viewer*, try it out!\n* There's lots you can do\n\n\n* Bullets!\n  * More Bullets!";
+  const defaultCode = "# Hello!\n1. This is a **markdown** *viewer*, try it out!\n* There's lots you can do\n\n\n* Bullets!\n  * More Bullets!";
   const history = useHistory();
   const { id: codeId } = useParams();
   const editorRef = useRef();
@@ -87,9 +87,18 @@ function MarkdownEditor() {
     <Box direction="row" margin={{ right: "small" }}>
       <h3>Title: </h3>
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
-      <Button icon={<New />} onClick={() => history.push("/markdown", { message: defaultCode })} />
-      <Button icon={<Copy />} onClick={() => history.push("/markdown", { message: codeState })} />
-      <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
+      <Box>
+        <Button icon={<New />} onClick={() => history.push("/markdown", { message: defaultCode })} />
+        <Text size="small">New</Text>
+      </Box>
+      <Box>
+        <Button icon={<Copy />} onClick={() => history.push("/markdown", { message: codeState })} />
+        <Text size="small">Copy</Text>
+      </Box>
+      <Box>
+        <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
+        <Text size="small">Save</Text>
+      </Box>
     </Box>
     <Box>
       <CodeMirror

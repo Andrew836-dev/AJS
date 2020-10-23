@@ -3,7 +3,8 @@ import React from "react";
 const validCodeTypes = {
   EXPRESSION_STATEMENT: "ExpressionStatement",
   FUNCTION_DECLARATION: "FunctionDeclaration",
-  VARIABLE_DECLARATION: "VariableDeclaration"
+  VARIABLE_DECLARATION: "VariableDeclaration",
+  BLOCK_STATEMENT: "BlockStatement"
 }
 
 const validExpressionTypes = {
@@ -27,15 +28,15 @@ function CodeBlock({ code }) {
           return <ul>
             <details>
               <summary>Function Call : {code.expression.callee ? `${code.expression.callee.name}` : "Anonymous"}</summary>
-              {`Arguments : ${code.expression.arguments.length ? code.expression.arguments.join(", ") : "None"}`}
+              {`Arguments : ${code.expression.arguments.length ? code.expression.arguments.map(argument => argument.name ? argument.name : "Haven't gotten to this part yet").join(", ") : "None"}`}
             </details>
           </ul>
         default:
-          console.log(code);
-          return <p>Expression</p>;
+          //console.log(code);
+          return <p>Expression, Note to self... write code for {code.expression.type}</p>;
       }
     case validCodeTypes.FUNCTION_DECLARATION:
-      console.log(code);
+      //console.log(code);
       return <ul>
         <details>
           <summary>Function Declaration : {code.id ? code.id.name : "Anonymous"}</summary>
@@ -48,12 +49,24 @@ function CodeBlock({ code }) {
         {code.declarations
           .map(declaration => <details key={`declare${declaration.id.name}`}>
             <summary>
-              {`${code.kind} ${declaration.id.name} = ${declaration.init ? declaration.init.value : "undefined"}`}
+              {`${code.kind} ${declaration.id.name} = ${declaration.init ? declaration.init.value : "Not defined here"}`}
             </summary>
+            {(code.kind === "var" || code.kind === "let") && (
+              <>
+                <p>{code.kind} is a variable declaration that can be reassigned later</p>
+                <p>This means that you can change what it is referencing. (<code>{declaration.id.name} = "Potatoes"</code>) is fine</p>
+              </>)}
+            {code.kind === "const" && (
+              <>
+                <p>const is a variable that can <strong>not</strong> be reassigned later</p>
+                <p>This means that you can not change what it is referencing. (<code>{declaration.id.name} = "Potatoes"</code>) will cause an error.</p>
+              </>)}
           </details>)}
       </ul>;
+    case validCodeTypes.BLOCK_STATEMENT:
+      return code.body.map((statement, index) => <CodeBlock key={index.toString() + statement.toString()} code={statement} />);
     default:
-      return <>Default</>;
+      return <>Note to self... write code for  {code.type}</>;
   }
 }
 

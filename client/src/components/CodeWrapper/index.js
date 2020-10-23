@@ -24,9 +24,9 @@ function javascriptParse(code) {
     default:
       console.log(code.type);
   }
-  //for (let key in code) {
+  // for (let key in code) {
   // const newUl = document.createElement("ul");
-  //const newSummary = document.createElement("summary");
+  // const newSummary = document.createElement("summary");
   // const newDetail = document.createElement("details");
   return <ul>
     <details>

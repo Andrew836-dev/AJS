@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUserContext } from "../../utils/UserStore";
 import { useParams, useHistory } from "react-router-dom";
-import { Box, Button, TextInput } from "grommet";
+import { Box, Button, Text, TextInput } from "grommet";
 import { Save, New, Copy } from "grommet-icons";
 import CodeWrapper from "../../components/CodeWrapper";
 import CodeMirror from "@uiw/react-codemirror";
@@ -69,7 +69,7 @@ function Editor() {
     // setLoading(true);
     if (!codeId) {
       return API
-        .saveCode("new", {mode, title, body: codeToSave})
+        .saveCode("new", { mode, title, body: codeToSave })
         .then(dbCode => {
           history.push("/javascript/" + dbCode._id)
         }).catch(dbErr => {
@@ -87,11 +87,20 @@ function Editor() {
 
   return <Box fill>
     <Box direction="row" justify="end" margin={{ right: "small" }}>
-    <h3>Title: </h3>
+      <h3>Title: </h3>
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
-      <Button icon={<New />} onClick={() => history.push("/javascript", { message: defaultCode })} />
-      <Button icon={<Copy />} onClick={() => history.push("/javascript", { message: codeState })} />
-      <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
+      <Box>
+        <Button icon={<New />} onClick={() => history.push("/javascript", { message: defaultCode })} />
+        <Text size="small">New</Text>
+      </Box>
+      <Box>
+        <Button icon={<Copy />} onClick={() => history.push("/javascript", { message: codeState })} />
+        <Text size="small">Copy</Text>
+      </Box>
+      <Box>
+        <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
+        <Text size="small">Save</Text>
+      </Box>
     </Box>
     <Box>
       <CodeMirror
@@ -106,7 +115,7 @@ function Editor() {
       />
     </Box>
     <Box>
-      {/* <CodeWrapper code={safeParse(codeState)} /> */}
+      <CodeWrapper code={safeParse(codeState)} />
     </Box>
   </Box>
 }
