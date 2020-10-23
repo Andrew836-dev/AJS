@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Box, Button, Form, FormField, TextInput } from "grommet";
 import { useUserContext } from "../../utils/UserStore";
 import API from "../../utils/API";
@@ -12,16 +12,17 @@ function Register() {
   const history = useHistory();
 
   function handleSubmit(formValue) {
-    const { username, password, confirmPassword } = formValue;
-    if (!username) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
-    if (!password) return setErrorStatus({ color: "red", message: "Password cannot be blank" });
+    const { username, password } = formValue;
+    if (!username.trim()) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
+    if (password.length < 5) return setErrorStatus({ color: "red", message: "Password must be at lesat 5 characters" });
     setErrorStatus({ color: "green", message: "Checking your details" });
     userDispatch({ type: LOADING });
     API
       .userSignUp(username, password)
       .then(dbResponse => {
+        userDispatch({ ...dbResponse, type: LOGIN })
         setErrorStatus({ color: "green", message: "Successfully registered, logging you in." });
-        history.push("/profile/" + dbResponse.username);
+        history.push("/profile/" + dbResponse.username, { message: `Hi ${dbResponse.username}! Welcome to AJS.` });
       })
       .catch(err => {
         console.log(err);
@@ -29,8 +30,6 @@ function Register() {
         setErrorStatus({ color: "red", message: username + " is already in use" });
       });
   }
-
-  const buttonDisabled = { disabled: userContext.loading }
 
   return <>
     <Form
@@ -42,7 +41,7 @@ function Register() {
         <TextInput
           id="text-input-id"
           name="username"
-          required="true"
+          required={true}
         />
       </FormField>
       <FormField name="password" htmlfor="text-input-id" label="Password">
@@ -50,17 +49,9 @@ function Register() {
           type="password"
           id="text-input-id"
           name="password"
-          required="true"
+          required={true}
         />
       </FormField>
-      {/* <FormField name="confirmPassword" htmlfor="text-input-id" label="Password">
-        <TextInput
-          type="password"
-          id="text-input-id"
-          name="confirmPassword"
-          required="true"
-        />
-      </FormField> */}
       <Box direction="row" gap="medium">
         <Button type="submit" primary label="Register" disabled={userContext.loading} />
       </Box>

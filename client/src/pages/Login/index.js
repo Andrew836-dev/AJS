@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Box, Button, Form, FormField, TextInput, MaskedInput } from "grommet";
+import React, { useState } from "react";
+import { Box, Button, Form, FormField, TextInput } from "grommet";
 import { useUserContext } from "../../utils/UserStore";
 import API from "../../utils/API";
 import { LOGIN, LOADING, LOGOUT } from "../../utils/actions";
@@ -13,18 +13,16 @@ function Login() {
 
   function handleSubmit(formValue) {
     const { username, password } = formValue;
-    //const username = formRef.current.elements.username.value.trim();
-    //const password = formRef.current.elements.password.value;
-    if (!username) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
+    if (!username.trim()) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
     if (!password) return setErrorStatus({ color: "red", message: "Password cannot be blank" });
     setErrorStatus({ color: "green", message: "Checking your details" });
     userDispatch({ type: LOADING });
     API
-      .userLogin(username, password)
+      .userLogin(username.trim(), password)
       .then(dbResponse => {
         userDispatch({ ...dbResponse, type: LOGIN });
         setErrorStatus({ color: "green", message: "Successfully logged in" });
-        history.push("/profile/" + dbResponse.username);
+        history.push("/profile/" + dbResponse.username, { message: `Welcome back ${dbResponse.username}.` });
       })
       .catch(err => {
         console.log(err);
@@ -46,12 +44,12 @@ function Login() {
         <TextInput
           id="text-input-id"
           name="username"
-          required="true"
+          required={true}
           validate={{ regexp: /(\s)/g, status: "info", message: "message" }}
         />
       </FormField>
       <FormField name="password" htmlfor="text-input-id" label="Password">
-        <TextInput type="password" id="text-input-id" name="password" required="true" />
+        <TextInput type="password" id="text-input-id" name="password" required={true} />
       </FormField>
       <Box direction="row" gap="medium">
         <Button type="submit" primary label="Log in" disabled={userContext.loading} />
