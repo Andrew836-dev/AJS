@@ -22,7 +22,8 @@ import Register from "./pages/Register";
 const theme = {
   global: {
     colors: {
-      brand: "#333333"
+      brand: "#264653",
+      active: "#2A9D8F"
     },
     font: {
       family: 'Roboto',

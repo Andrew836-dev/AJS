@@ -16,8 +16,7 @@ function Editor() {
   const history = useHistory();
   const { id: codeId } = useParams();
   const editorRef = useRef();
-  const initialCodeRef = useRef("Loading");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("Untitled");
   const [codeState, setCodeState] = useState("");
@@ -37,7 +36,7 @@ function Editor() {
         setCodeState(initialCode);
       }
       setAuthor(userState.id);
-      setLoading(false);
+      // setLoading(false);
     } else if (codeId.length !== 24) {
       history.replace("/code", { message: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
     } else {
@@ -48,7 +47,7 @@ function Editor() {
           setAuthor(dbCode.author);
           setTitle(dbCode.title);
           setCodeState(dbCode.body.join("\n"));
-          setLoading(false);
+          // setLoading(false);
           editorRef.current.editor.setValue(dbCode.body.join("\n"));
         })
         .catch(() => {
@@ -56,7 +55,7 @@ function Editor() {
         });
     }
 
-  }, [codeId, history, history.location])
+  }, [codeId, history, history.location, userState.id])
 
   function handleCodeChange(editor, change) {
     if (change.origin === "setValue") return;
@@ -67,7 +66,7 @@ function Editor() {
 
   function saveCode() {
     const codeToSave = codeState.split("\n");
-    setLoading(true);
+    // setLoading(true);
     if (!codeId) {
       return API
         .saveCode("new", {mode, title, body: codeToSave})
@@ -75,14 +74,14 @@ function Editor() {
           history.push("/code/" + dbCode._id)
         }).catch(dbErr => {
           console.log(dbErr);
-          setLoading(false);
+          // setLoading(false);
         });
     }
     API.saveCode(codeId, codeToSave)
-      .then(() => setLoading(false))
+      // .then(() => setLoading(false))
       .catch(dbErr => {
         console.log(dbErr);
-        setLoading(false);
+        // setLoading(false);
       });
   }
 

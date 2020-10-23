@@ -6,7 +6,7 @@ import { LOGOUT } from "../../utils/actions";
 
 function Logout() {
   const history = useHistory();
-  const [userContext, userDispatch] = useUserContext();
+  const [_userContext, userDispatch] = useUserContext();
 
   useEffect(() => {
     API
@@ -14,8 +14,8 @@ function Logout() {
       .then(response => {
         userDispatch({ type: LOGOUT });
         history.push("/", response);
-      })
-  })
+      });
+  });
   return <></>
 }
 
