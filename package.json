@@ -1,7 +1,7 @@
 {
-  "name": "mern",
+  "name": "ajs",
   "version": "1.0.0",
-  "description": "Mern Demo",
+  "description": "AJS - It's about JavaScript",
   "main": "server.js",
   "scripts": {
     "start": "if-env NODE_ENV=production && yarn run start:prod || yarn run start:dev",
@@ -12,7 +12,7 @@
     "install": "cd client && yarn install",
     "build": "cd client && yarn run build",
     "heroku-postbuild": "yarn run build",
-    "test": "mocha && cd client && yarn run test",
+    "test": "mocha",
     "test:watch": "mocha --watch"
   },
   "author": "Andrew Gray",
@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "express": "^4.16.3",
-    "express-acl": "^2.0.8",
     "express-session": "^1.17.1",
     "express-validator": "^6.6.1",
     "helmet": "^4.1.1",

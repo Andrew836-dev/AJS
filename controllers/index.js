@@ -36,7 +36,6 @@ async function registerNewCode (authorId, codeObject) {
 }
 
 async function registerNewUser (username, password) {
-  console.log(username, password);
   return db.User.create({ username })
     .then(newUser => newUser.setPassword(password))
     .then(saltedUser => saltedUser.save())

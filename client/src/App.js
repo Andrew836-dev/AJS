@@ -43,7 +43,7 @@ function App() {
               <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
                 <Box flex align='center' justify='center'>
                   <Switch>
-                    <Route exact path={["/code", "/code/:id"]}>
+                    <Route exact path={["/javascript", "/javascript/:id"]}>
                       <Editor />
                     </Route>
                     <Route exact path={["/markdown", "/markdown/:id"]}>

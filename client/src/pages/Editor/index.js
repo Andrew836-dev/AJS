@@ -38,7 +38,7 @@ function Editor() {
       setAuthor(userState.id);
       // setLoading(false);
     } else if (codeId.length !== 24) {
-      history.replace("/code", { message: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
+      history.replace("/javascript", { message: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
     } else {
       setCodeState("Checking server for code " + codeId);
       API
@@ -51,7 +51,7 @@ function Editor() {
           editorRef.current.editor.setValue(dbCode.body.join("\n"));
         })
         .catch(() => {
-          history.push("/code", { message: `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n` })
+          history.push("/javascript", { message: `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n` })
         });
     }
 
@@ -71,7 +71,7 @@ function Editor() {
       return API
         .saveCode("new", {mode, title, body: codeToSave})
         .then(dbCode => {
-          history.push("/code/" + dbCode._id)
+          history.push("/javascript/" + dbCode._id)
         }).catch(dbErr => {
           console.log(dbErr);
           // setLoading(false);
@@ -89,8 +89,8 @@ function Editor() {
     <Box direction="row" justify="end" margin={{ right: "small" }}>
     <h3>Title: </h3>
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
-      <Button icon={<New />} onClick={() => history.push("/code", { message: defaultCode })} />
-      <Button icon={<Copy />} onClick={() => history.push("/code", { message: codeState })} />
+      <Button icon={<New />} onClick={() => history.push("/javascript", { message: defaultCode })} />
+      <Button icon={<Copy />} onClick={() => history.push("/javascript", { message: codeState })} />
       <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
     </Box>
     <Box>

@@ -59,7 +59,7 @@ function NavBar() {
                 align='center'
                 justify='center'
               >
-                <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
+                <NavLink to="/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
                 <NavLink to="/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
                 {userContext.username
                   ? <>
@@ -92,7 +92,7 @@ function NavBar() {
                   align="center"
                   justify="center"
                 >
-                  <NavLink to="/code" onClick={hideMenu}>Javascript Editor</NavLink>
+                  <NavLink to="/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
                   <NavLink to="/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
                   {userContext.username
                     ? <>

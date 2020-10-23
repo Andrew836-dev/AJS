@@ -14,7 +14,7 @@ function Landing() {
           <Button label="Register" onClick={() => history.push("/register")} />
         </>
       )}
-      <Button label="Javascript Editor" onClick={() => history.push("/code")} />
+      <Button label="Javascript Editor" onClick={() => history.push("/javascript")} />
       <Button label="Markdown Editor" onClick={() => history.push("/markdown")} />
       {!!userState.username && (
         <>
