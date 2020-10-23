@@ -31,8 +31,8 @@ async function getUserByName (username) {
   return db.User.findOne({ username });
 }
 
-async function registerNewCode (authorId, codeArray) {
-  return db.Snippet.create({ author: authorId, body: codeArray });
+async function registerNewCode (authorId, codeObject) {
+  return db.Snippet.create({ ...codeObject, author: authorId });
 }
 
 async function registerNewUser (username, password) {
@@ -43,8 +43,8 @@ async function registerNewUser (username, password) {
     .catch(err => Promise.reject(err));
 }
 
-async function updateCodeById (codeId, codeArray) {
-  return db.Snippet.findByIdAndUpdate(codeId, { body: codeArray, lastEdited: Date.now() });
+async function updateCodeById (codeId, codeObject) {
+  return db.Snippet.findByIdAndUpdate(codeId, { ...codeObject, lastEdited: Date.now() });
 }
 
 async function updateLastLoginById (id) {

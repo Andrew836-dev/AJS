@@ -43,8 +43,10 @@ function UserProfile(props) {
   return (!username
     ? <p>Can't show a profile without a name. Please log in or view someone elses profile</p>
     : <Box fill overflow={{ vertical: "scroll" }}>
-      <Box direction="row" justify="center">
-        <img src="https://placekitten.com/150/150" alt="" height="150px" />
+      <Box direction="row" justify="center" margin="small" pad="small" height={{ min: "150px" }}>
+        <Box>
+          <img src="https://placekitten.com/150/150" alt="" height="150px" />
+        </Box>
         <Box>
           <p>UserName: {profileData.username}</p>
           <p>Last Login: {moment(profileData.lastLogin).local().toString()}</p>
@@ -52,7 +54,7 @@ function UserProfile(props) {
         </Box>
       </Box>
       <Box direction="row" justify="center">
-        <Box direction="column">
+        <Box direction="column" height={{min: "200px"}}>
           <p>Saved Code: {snippetData.length}</p>
           <p>Profiles Followed: 0</p>
           <p>Total Followers: 0</p>
@@ -76,7 +78,7 @@ function UserProfile(props) {
                 <Paragraph>Title: {snippet.title || "Untitled"}</Paragraph>
               </Box>
               <Box gridArea="nav" direction="column" justify="center">
-                <Link to={"/code/" + snippet._id}><View />View Snippet</Link>
+                <Link to={`/${snippet.mode}/${snippet._id}`}><View />View Snippet</Link>
               </Box>
               <Box gridArea="main" direction="column" pad="small">
                 <Paragraph>First Line: {snippet.body[0]}</Paragraph>

@@ -49,7 +49,9 @@ module.exports = function (app) {
   app.post("/api/code/:id",
     [
       isAuthenticated,
-      body().isArray()
+      body("title").isString(),
+      body("mode").isString(),
+      body("body").isArray()
     ]
     , (req, res) => {
       const errors = validationResult(req);

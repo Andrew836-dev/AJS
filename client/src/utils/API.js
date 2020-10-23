@@ -28,9 +28,9 @@ const getUserSnippets = name => {
     .catch(Promise.reject);
 }
 
-const saveCode = (id, codeArray) => {
+const saveCode = (id, codeObject) => {
   return axios
-    .post("/api/code/" + id, codeArray)
+    .post("/api/code/" + id, codeObject)
     .then(({ data }) => data)
     .catch(Promise.reject);
 }
