@@ -92,7 +92,7 @@ function Editor() {
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
       <Button icon={<New />} onClick={() => history.push("/code", { message: defaultCode })} />
       <Button icon={<Copy />} onClick={() => history.push("/code", { message: codeState })} />
-      <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST} />
+      <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
     </Box>
     <Box>
       <CodeMirror

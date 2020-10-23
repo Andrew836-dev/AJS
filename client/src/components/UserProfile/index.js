@@ -53,8 +53,8 @@ function UserProfile(props) {
           <p>Signup date: {moment(profileData.signupDate).local().toString()}</p>
         </Box>
       </Box>
-      <Box direction="row" justify="center">
-        <Box direction="column" height={{min: "200px"}}>
+      <Box direction="row" justify="center" height={{min: "200px"}}>
+        <Box direction="column">
           <p>Saved Code: {snippetData.length}</p>
           <p>Profiles Followed: 0</p>
           <p>Total Followers: 0</p>
