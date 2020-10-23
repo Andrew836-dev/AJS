@@ -8,13 +8,14 @@
 
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Box, Grommet, ResponsiveContext } from "grommet";
+import { Box, Grommet } from "grommet";
 import { UserProvider } from "./utils/UserStore";
 import NavBar from "./components/NavBar";
 import Landing from "./pages/Landing";
 import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
 import Login from "./pages/Login";
+import Logout from "./pages/Logout";
 import Register from "./pages/Register";
 
 const theme = {
@@ -40,20 +41,23 @@ function App() {
               <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
                 <Box flex align='center' justify='center'>
                   <Switch>
-                    <Route exact path="/">
-                      <Landing />
-                    </Route>
                     <Route exact path={["/code", "/code/:id"]}>
                       <Editor />
                     </Route>
                     <Route exact path="/login">
                       <Login />
                     </Route>
+                    <Route exact path="/logout">
+                      <Logout />
+                    </Route>
                     <Route exact path="/register">
                       <Register />
                     </Route>
                     <Route exact path={["/profile", "/profile/:username"]}>
                       <ProfileWrapper />
+                    </Route>
+                    <Route path="/">
+                      <Landing />
                     </Route>
                   </Switch>
                 </Box>
