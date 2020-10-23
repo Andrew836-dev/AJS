@@ -41,7 +41,7 @@ function NavBar() {
       align="center"
       justify="between"
       background="brand"
-      pad={{ left: "medium", right: "small", vertical: "small" }}
+      pad={{ left: "medium", right: "small" }}
       elevation="medium"
       style={{ zIndex: "1" }}
     >
@@ -51,7 +51,7 @@ function NavBar() {
       <ResponsiveContext.Consumer>
         {size => (<>
           {(!menuVisible || size !== "small") ? (
-            <Collapsible direction="horizontal" open={menuVisible}>
+            <Collapsible direction="vertical" open={menuVisible}>
               <Box
                 width='small'
                 background='light-2'
