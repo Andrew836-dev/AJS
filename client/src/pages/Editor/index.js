@@ -62,7 +62,6 @@ function Editor() {
   }
 
   function saveCode() {
-    if (userState.role === GUEST) return;
     const codeToSave = editorRef.current.editor.getValue().split("\n");
     setLoading(true);
     if (!codeId) {
@@ -87,7 +86,7 @@ function Editor() {
     <Box direction="row" justify="end" margin={{ right: "small" }}>
       <Button icon={<New />} onClick={() => history.push("/code", { message: defaultCode })} />
       <Button icon={<Copy />} onClick={() => history.push("/code", { message: codeState })} />
-      <Button icon={<Save />} onClick={saveCode} disabled={userState.role !== GUEST} />
+      <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST} />
     </Box>
     <Box>
       <CodeMirror

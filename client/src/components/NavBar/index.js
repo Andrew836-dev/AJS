@@ -46,7 +46,7 @@ function NavBar() {
       style={{ zIndex: "1" }}
     >
       <Heading level="3" margin="none">
-        <NavLink to="/" onClick={hideMenu}>AJS</NavLink>
+        <NavLink to="/" style={{textDecoration: "none", color: "white"}} onClick={hideMenu}>AJS</NavLink>
       </Heading>
       <ResponsiveContext.Consumer>
         {size => (<>

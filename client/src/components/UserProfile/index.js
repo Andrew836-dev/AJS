@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Box, Grid, Paragraph } from "grommet";
+import { View } from "grommet-icons";
 import API from "../../utils/API";
 import moment from "moment";
 
@@ -40,30 +42,50 @@ function UserProfile(props) {
 
   return (!username
     ? <p>Can't show a profile without a name. Please log in or view someone elses profile</p>
-    : <>
-      <div>
+    : <Box fill overflow={{ vertical: "scroll" }}>
+      <Box direction="row" justify="center">
         <img src="https://placekitten.com/150/150" alt="" height="150px" />
-        <p>{profileData.username}</p>
-        <p>Last Login: {profileData.lastLogin}</p>
-        <p>Signup date: {profileData.signupDate}</p>
-      </div>
-      <div>
-        <p>Saved Code: 0</p>
-        <p>Profiles Followed: 0</p>
-        <p>Total Followers: 0</p>
-      </div>
-      {snippetData.length
-        ? <div>
-          {snippetData.map(snippet => <div key={snippet._id}>
-            <Link to={"/code/" + snippet._id}>View</Link>
-            <p>{snippet.mode}</p>
-            <p>{snippet.title}</p>
-            <p>{snippet.body[0]}</p>
-            <p>{moment(snippet.lastEdited).local().toString()}</p>
-          </div>)}
-        </div>
-        : null}
-    </>)
+        <Box>
+          <p>UserName: {profileData.username}</p>
+          <p>Last Login: {moment(profileData.lastLogin).local().toString()}</p>
+          <p>Signup date: {moment(profileData.signupDate).local().toString()}</p>
+        </Box>
+      </Box>
+      <Box direction="row" justify="center">
+        <Box direction="column">
+          <p>Saved Code: {snippetData.length}</p>
+          <p>Profiles Followed: 0</p>
+          <p>Total Followers: 0</p>
+        </Box>
+      </Box>
+      <Box direction="row" justify="center">
+        {!!snippetData.length && (
+          <Box>
+            {snippetData.map(snippet => <Grid key={snippet._id}
+              rows={['xsmall', 'small']}
+              columns={['small', 'medium']}
+              gap="small"
+              areas={[
+                { name: 'header', start: [0, 0], end: [1, 0] },
+                { name: 'nav', start: [0, 1], end: [0, 1] },
+                { name: 'main', start: [1, 1], end: [1, 1] },
+              ]}
+            >
+              <Box gridArea="header" background="brand">
+                <Paragraph>Language: {snippet.mode}</Paragraph>
+                <Paragraph>Title: {snippet.title || "Untitled"}</Paragraph>
+              </Box>
+              <Box gridArea="nav" direction="column" justify="center">
+                <Link to={"/code/" + snippet._id}><View />View Snippet</Link>
+              </Box>
+              <Box gridArea="main" direction="column" pad="small">
+                <Paragraph>First Line: {snippet.body[0]}</Paragraph>
+                <Paragraph>Last Edited: {moment(snippet.lastEdited).local().toString()}</Paragraph>
+              </Box>
+            </Grid>)}
+          </Box>)}
+      </Box>
+    </Box>)
 }
 
 export default UserProfile;
