@@ -55,7 +55,7 @@ module.exports = function (app) {
   app.get("/api/profile/:username", (req, res) => {
     const usernameParam = req.params.username;
     controllers.getUserByName(usernameParam)
-      .then(({ _doc: dbUser }) => {
+      .then(dbUser => {
         if (!dbUser) {
           return res.status(404).end();
         }
