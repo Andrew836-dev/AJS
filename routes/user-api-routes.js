@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const PASSWORD_MIN_LENGTH = 5;
+const { PASSWORD_MIN_LENGTH } = require("../config/constants");
 // Requiring our models and passport as we've configured it
 const controllers = require("../controllers");
 const passport = require("../config/passport");
