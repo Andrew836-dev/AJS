@@ -2,7 +2,7 @@
 const controller = require("../controllers");
 const mongoose = require("mongoose");
 
-const { FIRST_USER } = require("./testUsers.json");
+const { FIRST_USER, SECOND_USER } = require("./testUsers.json");
 const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI || "mongodb://localhost/test";
 const defaultMongoOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 const chai = require("chai");
@@ -85,8 +85,6 @@ describe("Controller export", function () {
   });
 
   describe("registerNewUser() function", function () {
-    // const UNUSED_PASSWORD = "NotAPassword";
-
     this.beforeAll(done => {
       mongoose
         .connect(TEST_MONGODB_URI, defaultMongoOptions)
@@ -108,6 +106,18 @@ describe("Controller export", function () {
         .then(createdUser => {
           const nameReg = new RegExp(FIRST_USER.username);
           expect(createdUser.username).to.match(nameReg);
+          done();
+        })
+        .catch(done);
+    });
+
+    it("Registers a second user when there is one already in the database", done => {
+      controller
+        .registerNewUser(FIRST_USER.username, FIRST_USER.password)
+        .then(() => controller.registerNewUser(SECOND_USER.username, SECOND_USER.password))
+        .then(secondUser => {
+          const nameReg = new RegExp(SECOND_USER);
+          expect(secondUser.username).to.match(nameReg);
           done();
         })
         .catch(done);
