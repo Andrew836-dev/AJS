@@ -3,7 +3,7 @@ const { body, param, validationResult } = require("express-validator");
 const isAuthenticated = require("../config/middleware/isAuthenticated");
 
 module.exports = function (app) {
-  app.get("/api/author/:name",
+  app.get(["/api/author", "/api/author/:name"],
     [
       param("name").isString().notEmpty()
     ]
