@@ -6,9 +6,6 @@ const { expect } = chai;
 const sinon = require("sinon");
 const mongoose = require("mongoose");
 
-// this is a quick fix to make the tests possible without an in memory server
-const authenticate = require("passport-local-mongoose/lib/authenticate");
-
 chai.use(http);
 const { FIRST_USER, FIRST_USER_SNAPSHOT } = require("./testUsers.json");
 
@@ -33,28 +30,7 @@ describe("API route '/api/login' with mocked authentication", function () {
   it("returns status 200 with authentication success", done => {
     sinon
       .stub(mongoose.model("User"), "findByUsername")
-      .callsFake(
-        () => {
-          const user = FIRST_USER_SNAPSHOT;
-          user.select = () => FIRST_USER_SNAPSHOT;
-          user.authenticate = (password) => (
-            authenticate(
-              user,
-              password,
-              {
-                saltField: "salt",
-                hashField: "hash",
-                encoding: "hex",
-                iterations: 25000,
-                keylen: 512,
-                digestAlgorithm: "sha256"
-              }
-            )
-          );
-          user.get = (field) => user[field];
-          return Promise.resolve(user);
-        }
-      );
+      .callsFake(() => Promise.resolve(mongoose.model("User")(FIRST_USER_SNAPSHOT)));
 
     appRequest
       .post("/api/login")
@@ -69,15 +45,8 @@ describe("API route '/api/login' with mocked authentication", function () {
   it("returns status 401 if the register function returns an error", done => {
     sinon
       .stub(mongoose.model("User"), "findByUsername")
-      .callsFake(
-        () => {
-          const user = (FIRST_USER_SNAPSHOT);
-          user.select = () => FIRST_USER_SNAPSHOT;
-          user.authenticate = () => ("Error");
-          user.get = (field) => user[field];
-          return Promise.resolve(user);
-        }
-      );
+      .callsFake(() => Promise.resolve(mongoose.model("User")(FIRST_USER_SNAPSHOT)));
+
     appRequest
       .post("/api/login")
       .send({ username: FIRST_USER.username, password: FIRST_USER.password + "X" })
