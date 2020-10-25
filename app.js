@@ -5,9 +5,9 @@ const express = require("express");
 const logger = require("morgan");
 const helmet = require("helmet");
 
-const SCRIPT_HASH = process.env.SCRIPT_HASH;
-const STYLE_HASH_ONE = process.env.STYLE_HASH_ONE;
-const STYLE_HASH_TWO = process.env.STYLE_HASH_TWO;
+const SCRIPT_HASH = process.env.SCRIPT_HASH || "";
+const STYLE_HASH_ONE = process.env.STYLE_HASH_ONE || "";
+const STYLE_HASH_TWO = process.env.STYLE_HASH_TWO || "";
 const app = express();
 
 // Serve up static assets (usually on heroku)
