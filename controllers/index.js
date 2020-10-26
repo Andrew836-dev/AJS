@@ -14,6 +14,10 @@ async function checkIfNameInUse (username) {
     .then(dbUser => !!dbUser);
 }
 
+async function getCode () {
+  return db.Snippet.find().sort({ lastEdited: 1 });
+}
+
 async function getCodeByAuthorId (id) {
   return db.Snippet.find({ author: id });
 }
@@ -57,6 +61,7 @@ module.exports = {
   connect: (uri = MONGODB_URI, options = defaultMongoOptions) =>
     mongoose.connect(uri, options),
   disconnect: () => mongoose.disconnect(),
+  getCode,
   getCodeByAuthorId,
   getCodeByAuthorName,
   getCodeById,

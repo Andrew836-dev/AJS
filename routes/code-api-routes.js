@@ -25,6 +25,16 @@ module.exports = function (app) {
         });
     });
 
+  app.get("/api/code", (req, res) => {
+    controllers.getCode()
+      .then(dbCode => {
+        if (Array.isArray(dbCode)) {
+          return res.json(dbCode);
+        }
+        res.json([]);
+      });
+  });
+
   app.get("/api/code/:id",
     [
       param("id").isMongoId().notEmpty()
