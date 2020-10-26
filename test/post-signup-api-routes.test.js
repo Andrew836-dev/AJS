@@ -115,7 +115,8 @@ describe("API route '/api/signup'", function () {
 
   it("returns status 401 if the register function returns an error", done => {
     sinon.restore();
-    sinon.stub(controller, "registerNewUser").callsFake(() => Promise.reject(Error("Throwing an error")));
+    sinon.stub(controller, "registerNewUser")
+      .callsFake(() => Promise.reject(Error("Throwing an error")));
     appRequest
       .post("/api/signup")
       .send(FIRST_USER)
