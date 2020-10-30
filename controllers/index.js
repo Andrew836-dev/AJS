@@ -15,7 +15,7 @@ async function checkIfNameInUse (username) {
 }
 
 async function getCode () {
-  return db.Snippet.find().sort({ lastEdited: 1 });
+  return db.Snippet.find().sort({ lastEdited: -1 });
 }
 
 async function getCodeByAuthorId (id) {
