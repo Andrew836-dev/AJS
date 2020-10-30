@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Box, Button } from "grommet";
 import { useUserContext } from "../../utils/UserStore";
@@ -14,8 +14,8 @@ function Landing() {
           <Button label="Register" onClick={() => history.push("/register")} />
         </>
       )}
-      <Button label="Javascript Editor" onClick={() => history.push("/javascript")} />
-      <Button label="Markdown Editor" onClick={() => history.push("/markdown")} />
+      <Button label="Javascript Editor" onClick={() => history.push("/editor/javascript")} />
+      <Button label="Markdown Editor" onClick={() => history.push("/editor/markdown")} />
       {!!userState.username && (
         <>
           <Button label="Your profile" onClick={() => history.push("/profile/" + userState.username)} />

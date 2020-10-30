@@ -78,7 +78,7 @@ function UserProfile(props) {
                 <Paragraph>Title: {snippet.title || "Untitled"}</Paragraph>
               </Box>
               <Box gridArea="nav" direction="column" justify="center">
-                <Link to={`/${snippet.mode}/${snippet._id}`}><View />View Snippet</Link>
+                <Link to={`/editor/${snippet.mode}/${snippet._id}`}><View />View Snippet</Link>
               </Box>
               <Box gridArea="main" direction="column" pad="small">
                 <Paragraph>First Line: {snippet.body[0]}</Paragraph>

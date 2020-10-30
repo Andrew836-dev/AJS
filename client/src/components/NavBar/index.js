@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useUserContext } from "../../utils/UserStore";
 
 import {
@@ -13,13 +13,25 @@ import {
 import { Menu, FormClose } from "grommet-icons";
 
 import API from "../../utils/API";
-import { LOGIN } from "../../utils/actions";
+import { LOGIN, LOGOUT, LOADING } from "../../utils/actions";
 
 function NavBar() {
+  const history = useHistory();
   const [userContext, userDispatch] = useUserContext();
   const [menuVisible, setMenuVisible] = useState(false);
   const hideMenu = () => setMenuVisible(false);
   const toggleMenuVisibility = () => setMenuVisible(!menuVisible);
+  const logout = (e) => {
+    e.preventDefault();
+    userDispatch({ type: LOADING });
+    API
+      .userLogout()
+      .then(() => {
+        userDispatch({ type: LOGOUT })
+        history.push("/", { message: "You have logged out" })
+      });
+  }
+
   useEffect(() => {
     API
       .getUserSessionData()
@@ -34,6 +46,7 @@ function NavBar() {
       })
       .catch(console.log);
   }, [userContext, userDispatch]);
+
   return (
     <Box
       tag="header"
@@ -46,7 +59,7 @@ function NavBar() {
       style={{ zIndex: "1" }}
     >
       <Heading level="3" margin="none">
-        <NavLink to="/" style={{textDecoration: "none", color: "white"}} onClick={hideMenu}>AJS</NavLink>
+        <NavLink to="/" style={{ textDecoration: "none", color: "white" }} onClick={hideMenu}>AJS</NavLink>
       </Heading>
       <ResponsiveContext.Consumer>
         {size => (<>
@@ -59,12 +72,12 @@ function NavBar() {
                 align='center'
                 justify='center'
               >
-                <NavLink to="/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
-                <NavLink to="/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
+                <NavLink to="/editor/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
+                <NavLink to="/editor/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
                 {userContext.username
                   ? <>
                     <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
-                    <Link to="/logout" onClick={hideMenu}>Log Out</Link>
+                    <NavLink to="/" onClick={logout}>Log Out</NavLink>
                   </>
                   : <>
                     <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
@@ -92,12 +105,12 @@ function NavBar() {
                   align="center"
                   justify="center"
                 >
-                  <NavLink to="/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
-                  <NavLink to="/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
+                  <NavLink to="/editor/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
+                  <NavLink to="/editor/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
                   {userContext.username
                     ? <>
                       <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
-                      <NavLink to="/logout" onClick={hideMenu}>Log Out</NavLink>
+                      <NavLink to="/" onClick={logout}>Log Out</NavLink>
                     </>
                     : <>
                       <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
