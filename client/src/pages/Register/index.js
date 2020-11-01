@@ -14,7 +14,7 @@ function Register() {
   function handleSubmit(formValue) {
     const { username, password } = formValue;
     if (!username.trim()) return setErrorStatus({ color: "red", message: "Username cannot be blank" })
-    if (password.length < 5) return setErrorStatus({ color: "red", message: "Password must be at lesat 5 characters" });
+    if (password.length < 5) return setErrorStatus({ color: "red", message: "Password must be at least 5 characters" });
     setErrorStatus({ color: "green", message: "Checking your details" });
     userDispatch({ type: LOADING });
     API
