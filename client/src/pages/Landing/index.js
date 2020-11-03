@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Box, Button, List } from "grommet";
+import { Box, Button } from "grommet";
 import { useUserContext } from "../../utils/UserStore";
 
 function Landing() {
