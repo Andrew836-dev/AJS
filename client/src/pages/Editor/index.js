@@ -7,7 +7,6 @@ import {
   CheckBox,
   Markdown,
   ResponsiveContext,
-  Select,
   Text,
   TextInput
 } from "grommet";
@@ -34,8 +33,8 @@ function Editor() {
   useEffect(() => {
     if (!codeId) {
       if (history.location.state) {
-        const { message } = history.location.state;
-        setCodeState(message);
+        const { code } = history.location.state;
+        setCodeState(code);
       } else {
         const initialCode = (
           localStorage.getItem("codeText")
@@ -46,7 +45,7 @@ function Editor() {
       setAuthor(userState.id);
       // setLoading(false);
     } else if (codeId.length !== 24) {
-      history.replace("/javascript", { message: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
+      history.replace("/javascript", { code: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
     } else {
       setCodeState("Checking server for code " + codeId);
       API
@@ -59,7 +58,7 @@ function Editor() {
           editorRef.current.editor.setValue(dbCode.body.join("\n"));
         })
         .catch(() => {
-          history.push("/javascript", { message: `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n` })
+          history.push("/javascript", { code: `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n` })
         });
     }
     setDarkTheme(
@@ -101,11 +100,11 @@ function Editor() {
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
       <CheckBox label="Dark" checked={darkTheme} onClick={() => setDarkTheme(!darkTheme)} />
       <Box>
-        <Button icon={<New />} onClick={() => history.push("/editor/" + mode, { message: "" })} />
+        <Button icon={<New />} onClick={() => history.push("/editor/" + mode, { code: "" })} />
         <Text size="small">New</Text>
       </Box>
       <Box>
-        <Button icon={<Copy />} onClick={() => history.push("/editor/" + mode, { message: codeState })} />
+        <Button icon={<Copy />} onClick={() => history.push("/editor/" + mode, { code: codeState })} />
         <Text size="small">Fork</Text>
       </Box>
       <Box>
@@ -115,8 +114,7 @@ function Editor() {
     </Box>
     <ResponsiveContext.Consumer>
       {size => (<Box direction="row-responsive" justify="center">
-        {console.log(size)}
-        <Box width={size !== "small" ? "50%" : "90%"} height="50vh">
+        <Box width={size !== "small" ? "50%" : "100%"} height="50vh">
           <CodeMirror
             ref={editorRef}
             value={codeState}
@@ -130,7 +128,7 @@ function Editor() {
             onChange={handleCodeChange}
           />
         </Box>
-        <Box width={size !== "small" ? "45%" : "90%"}>
+        <Box width={size !== "small" ? "45%" : "100%"}>
           {mode === "markdown"
             ? <Markdown>{codeState}</Markdown>
             : <CodeWrapper code={safeParse(codeState)} />}
