@@ -33,7 +33,7 @@ module.exports = function (app) {
     [
       body("username").trim().notEmpty().escape(),
       body("password").isLength({ min: PASSWORD_MIN_LENGTH }),
-      body("darkTheme").isBoolean()
+      body("darkTheme").optional().isBoolean()
     ],
     (req, res) => {
       const errors = validationResult(req);
