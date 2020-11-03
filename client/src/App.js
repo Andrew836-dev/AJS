@@ -16,7 +16,6 @@ import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
-import MarkdownEditor from "./pages/MarkdownEditor";
 import Register from "./pages/Register";
 
 const theme = {
@@ -46,9 +45,6 @@ function App() {
                     <Route exact path={["/editor/:language", "/editor/:language/:id"]}>
                       <Editor />
                     </Route>
-                    {/* <Route exact path={["/markdown", "/markdown/:id"]}>
-                      <MarkdownEditor />
-                    </Route> */}
                     <Route exact path="/login">
                       <Login />
                     </Route>
