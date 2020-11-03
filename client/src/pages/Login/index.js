@@ -37,19 +37,17 @@ function Login() {
       value={value}
       onChange={nextValue => setValue(nextValue)}
       onSubmit={({ value }) => handleSubmit(value)}
-      validate="blur"
-      onValidate={console.log}
     >
-      <FormField name="username" htmlfor="text-input-id" label="Username">
+      <FormField name="username" htmlfor="username" label="Username">
         <TextInput
-          id="text-input-id"
+          id="username"
           name="username"
           required={true}
           validate={{ regexp: /(\s)/g, status: "info", message: "message" }}
         />
       </FormField>
-      <FormField name="password" htmlfor="text-input-id" label="Password">
-        <TextInput type="password" id="text-input-id" name="password" required={true} />
+      <FormField name="password" htmlfor="password" label="Password">
+        <TextInput type="password" id="password" name="password" required={true} />
       </FormField>
       <Box direction="row" gap="medium">
         <Button type="submit" primary label="Log in" disabled={userContext.loading} />
