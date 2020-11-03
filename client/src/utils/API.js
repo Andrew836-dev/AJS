@@ -35,6 +35,13 @@ const saveCode = (id, codeObject) => {
     .catch(Promise.reject);
 }
 
+const updateProfileData = newData => {
+  return axios
+    .put("/api/user", newData)
+    .then(({ data }) => data)
+    .catch(err => Promise.reject({ error: err }));
+}
+
 const userLogin = (username, password) => {
   if (username.trim() && password) {
     const loginData = {
@@ -55,11 +62,12 @@ const userLogout = () => {
     .catch(Promise.reject);
 }
 
-const userSignUp = (username, password) => {
+const userSignUp = ({ username, password, darkTheme }) => {
   if (username.trim() && password) {
     const signUpData = {
       username: username.trim(),
-      password
+      password,
+      darkTheme
     }
     return axios
       .post("/api/signup", signUpData)
@@ -77,6 +85,7 @@ const API = {
   getUserSessionData,
   getUserSnippets,
   saveCode,
+  updateProfileData,
   userLogin,
   userLogout,
   userSignUp

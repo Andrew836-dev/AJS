@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Box, Grid, Paragraph } from "grommet";
+import { Box, Button, Grid, Paragraph, Text } from "grommet";
 import { View } from "grommet-icons";
 import API from "../../utils/API";
+import { useUserContext } from "../../utils/UserStore";
+import { LOADING, LOGIN, LOGOUT } from "../../utils/actions";
 import moment from "moment";
 
 function UserProfile(props) {
-  const username = props.profileName;
+  const { profileName: username } = props;
+  const [userContext, userDispatch] = useUserContext();
+  const [viewerIsOwner, setViewerIsOwner] = useState(false);
   const [profileData, setProfileData] = useState({
     role: "GUEST",
     username: username || "",
     signupDate: "",
-    lastLogin: ""
+    lastLogin: "",
+    darkTheme: true
   });
   const [snippetData, setSnippetData] = useState([]);
 
   useEffect(() => {
     if (username) {
+      setViewerIsOwner(username === userContext.username);
       API
         .getUserProfileData(username)
         .then(userData => {
@@ -38,26 +43,39 @@ function UserProfile(props) {
           console.log("Profile error", err);
         });
     }
-  }, [username]);
+  }, [username, userContext.username]);
+
+  function sendProfileData(newData) {
+    userDispatch({ type: LOADING })
+    API
+      .updateProfileData(newData)
+      .then(dbUser => userDispatch({ type: LOGIN, ...dbUser }))
+      .catch(err => {
+        console.log(err);
+        userDispatch({ type: LOGOUT })
+      });
+  }
 
   return (!username
     ? <p>Can't show a profile without a name. Please log in or view someone elses profile</p>
     : <Box fill overflow={{ vertical: "scroll" }}>
-      <Box direction="row" justify="center" margin="small" pad="small" height={{ min: "150px" }}>
+      <Box direction="row" justify="center" margin={{ bottom: "1rem" }} pad="small">
         <Box>
-          <img src="https://placekitten.com/150/150" alt="" height="150px" />
-        </Box>
-        <Box>
-          <p>UserName: {profileData.username}</p>
-          <p>Last Login: {moment(profileData.lastLogin).local().toString()}</p>
-          <p>Signup date: {moment(profileData.signupDate).local().toString()}</p>
+          <Text>{viewerIsOwner && "Hello "}{profileData.username}</Text>
+          <Text>Last Login: {moment(profileData.lastLogin).local().fromNow().toString()}</Text>
+          <Text>Signup date: {moment(profileData.signupDate).local().format("ddd MMM Do YYYY").toString()}</Text>
+          {viewerIsOwner && (<>
+            <Text>Preferred Theme: {userContext.darkTheme ? "Dark" : "Light"}</Text>
+            <Button
+              label={`Switch to ${userContext.darkTheme ? "Light" : "Dark"} theme.`}
+              onClick={() => sendProfileData({ darkTheme: !userContext.darkTheme })}
+            />
+          </>)}
         </Box>
       </Box>
-      <Box direction="row" justify="center" height={{min: "200px"}}>
+      <Box direction="row" justify="center">
         <Box direction="column">
-          <p>Saved Code: {snippetData.length}</p>
-          <p>Profiles Followed: 0</p>
-          <p>Total Followers: 0</p>
+          <p style={{ marginBottom: "1rem" }}>Saved Code: {snippetData.length}</p>
         </Box>
       </Box>
       <Box direction="row" justify="center">
@@ -73,16 +91,20 @@ function UserProfile(props) {
                 { name: 'main', start: [1, 1], end: [1, 1] },
               ]}
             >
-              <Box gridArea="header" background="brand">
+              <Box gridArea="header" background="brand" pad={{ left: "1rem" }} margin={{ top: "1rem" }}>
                 <Paragraph>Language: {snippet.mode}</Paragraph>
-                <Paragraph>Title: {snippet.title || "Untitled"}</Paragraph>
+                <Paragraph margin={{ top: "0px" }}>Title: {snippet.title || "Untitled"}</Paragraph>
               </Box>
               <Box gridArea="nav" direction="column" justify="center">
-                <Link to={`/editor/${snippet.mode}/${snippet._id}`}><View />View Snippet</Link>
+                <Button
+                  icon={<View />}
+                  label={`${viewerIsOwner ? "Edit" : "View"} Snippet`}
+                  href={`/editor/${snippet.mode}/${snippet._id}`}
+                />
               </Box>
               <Box gridArea="main" direction="column" pad="small">
                 <Paragraph>First Line: {snippet.body[0]}</Paragraph>
-                <Paragraph>Last Edited: {moment(snippet.lastEdited).local().toString()}</Paragraph>
+                <Paragraph>Last Edited: {moment(snippet.lastEdited).local().fromNow().toString()}</Paragraph>
               </Box>
             </Grid>)}
           </Box>)}

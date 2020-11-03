@@ -18,7 +18,8 @@ const reducer = (state, action) => {
         loading: false,
         username: action.username,
         role: action.role,
-        id: action.id
+        id: action.id,
+        darkTheme: action.darkTheme
       }
     case LOGOUT:
       return {
@@ -26,7 +27,8 @@ const reducer = (state, action) => {
         loading: false,
         username: "",
         role: GUEST,
-        id: ""
+        id: "",
+        darkTheme: true
       }
     default:
       return state;
@@ -37,7 +39,8 @@ const UserProvider = ({ value = [], ...props }) => {
     username: "",
     role: GUEST,
     loading: false,
-    id: ""
+    id: "",
+    darkTheme: true
   });
 
   return <Provider value={[state, dispatch]} {...props} />;
