@@ -24,15 +24,17 @@ function Editor() {
   const { language: mode, id: codeId } = useParams();
   const editorRef = useRef();
   const [darkTheme, setDarkTheme] = useState(true);
-  const [author, setAuthor] = useState("");
+  const [readOnly, setReadOnly] = useState(true);
   const [title, setTitle] = useState("Untitled");
   const [codeState, setCodeState] = useState("");
   const [userState] = useUserContext();
   // let mode = language;
 
   useEffect(() => {
+    let inEditor = true;
     if (!codeId) {
-      setAuthor(userState.id);
+      setDarkTheme(userState.darkTheme);
+      setReadOnly(false);
       if (history.location.state) {
         const { code } = history.location.state;
         setCodeState(code);
@@ -43,28 +45,36 @@ function Editor() {
         );
         setCodeState(initialCode);
       }
-      // setLoading(false);
     } else if (codeId.length !== 24) {
-      history.replace("/javascript", { code: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
+      redirectWithCode(`const invalidCodeId = "${codeId}";\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n`);
     } else {
+      setDarkTheme(userState.darkTheme);
       setCodeState("Checking server for code " + codeId);
       API
         .getCodebyId(codeId)
         .then(dbCode => {
-          setAuthor(dbCode.author);
-          setTitle(dbCode.title);
-          setCodeState(dbCode.body.join("\n"));
-          // setLoading(false);
-          editorRef.current.editor.setValue(dbCode.body.join("\n"));
+          if (inEditor) {
+            setReadOnly(dbCode.author !== userState.id);
+            setTitle(dbCode.title);
+            setCodeState(dbCode.body.join("\n"));
+            editorRef.current.editor.setOption("readOnly", dbCode.author !== userState.id);
+            editorRef.current.editor.setValue(dbCode.body.join("\n"));
+          }
         })
         .catch(() => {
-          history.push("/javascript", { code: `const codeId = ${codeId};\nconsole.log(codeId + " was not found in the database, starting a new session.");\n` })
+          if (inEditor) {
+            redirectWithCode(`const codeId = "${codeId}";\nconsole.log(codeId + " was not found in the database, starting a new session.");\n`);
+          }
         });
     }
-    setDarkTheme(
-      userState.darkTheme
-    );
-  }, [codeId, history, history.location, userState.id, userState.darkTheme])
+    return () => {
+      inEditor = false;
+    }
+  }, [codeId, history.location, userState.id, userState.darkTheme])
+
+  function redirectWithCode(code) {
+    history.replace("/editor/" + mode, { code: code });
+  }
 
   function handleCodeChange(editor, change) {
     if (change.origin === "setValue") return;
@@ -80,7 +90,7 @@ function Editor() {
       return API
         .saveCode("new", { mode, title, body: codeToSave })
         .then(dbCode => {
-          history.push("/javascript/" + dbCode._id)
+          history.push("/editor/" + mode + "/" + dbCode._id)
         }).catch(dbErr => {
           console.log("Error creating", dbErr);
           // setLoading(false);
@@ -94,21 +104,28 @@ function Editor() {
       });
   }
 
+  const codeMirrorOptions = {
+    theme: (darkTheme ? "monokai" : "default"),
+    // readOnly: readOnly,
+    lineWrapping: true,
+    // keyMap: "sublime",
+    mode: mode,
+  }
   return <Box fill>
     <Box direction="row" justify="end" margin={{ right: "small" }}>
       <h3>Title: </h3>
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
       <CheckBox label="Dark" checked={darkTheme} onClick={() => setDarkTheme(!darkTheme)} />
       <Box>
-        <Button icon={<New />} onClick={() => history.push("/editor/" + mode, { code: "" })} />
+        <Button icon={<New />} onClick={() => redirectWithCode("")} />
         <Text size="small">New</Text>
       </Box>
       <Box>
-        <Button icon={<Copy />} onClick={() => history.push("/editor/" + mode, { code: codeState })} />
+        <Button icon={<Copy />} onClick={() => redirectWithCode(codeState)} />
         <Text size="small">Fork</Text>
       </Box>
       <Box>
-        <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || userState.id !== author} />
+        <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || readOnly} />
         <Text size="small">Save</Text>
       </Box>
     </Box>
@@ -118,13 +135,7 @@ function Editor() {
           <CodeMirror
             ref={editorRef}
             value={codeState}
-            options={{
-              theme: (darkTheme ? "monokai" : "default"),
-              readOnly: (userState.id === author ? false : "nocursor"),
-              lineWrapping: true,
-              // keyMap: "sublime",
-              mode: mode,
-            }}
+            options={codeMirrorOptions}
             onChange={handleCodeChange}
           />
         </Box>
