@@ -32,15 +32,17 @@ module.exports = function (app) {
   app.post("/api/signup",
     [
       body("username").trim().notEmpty().escape(),
-      body("password").isLength({ min: PASSWORD_MIN_LENGTH })
+      body("password").isLength({ min: PASSWORD_MIN_LENGTH }),
+      body("darkTheme").isBoolean()
     ],
     (req, res) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-      const { username, password } = req.body;
-      controllers.registerNewUser(username, password)
+      const { username, password, darkTheme } = req.body;
+      const userData = { username, darkTheme };
+      controllers.registerNewUser(userData, password)
         .then(() => {
           return res.redirect(307, "/api/login");
         })

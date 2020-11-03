@@ -39,8 +39,8 @@ async function registerNewCode (authorId, codeObject) {
   return db.Snippet.create({ ...codeObject, author: authorId });
 }
 
-async function registerNewUser (username, password) {
-  return db.User.create({ username })
+async function registerNewUser (userData, password) {
+  return db.User.create(userData)
     .then(newUser => newUser.setPassword(password))
     .then(saltedUser => saltedUser.save())
     .catch(err => Promise.reject(err));
