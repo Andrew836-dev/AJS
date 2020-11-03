@@ -62,7 +62,7 @@ function Editor() {
         });
     }
     setDarkTheme(
-      localStorage.getItem("theme") || userState.darkTheme || true
+      userState.darkTheme
     );
   }, [codeId, history, history.location, userState.id, userState.darkTheme])
 
