@@ -3,18 +3,21 @@
     "username": "Teddy",
     "name": "Teddy",
     "email": "teddy@example.com",
-    "password": "teddypass"
+    "password": "teddypass",
+    "darkTheme": "false"
   },
   "SECOND_USER": {
     "username": "John",
     "name": "John",
     "email": "john.gammel@gmail.com",
-    "password": "joHnGL1v3s"
+    "password": "joHnGL1v3s",
+    "darkTheme": "true"
   },
   "FIRST_USER_SNAPSHOT": {
     "role": "User",
     "_id": "5f94d9a285ac4a22f0361331",
     "username": "Teddy",
+    "darkTheme": "false",
     "email": "teddy@example.com",
     "signupDate": "2020-10-25T01: 49: 22.807Z",
     "lastLogin": "2020-10-25T01: 49: 22.807Z",

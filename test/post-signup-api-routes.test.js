@@ -26,8 +26,8 @@ describe("API route '/api/signup'", function () {
   this.beforeEach(() => {
     sinon
       .stub(controller, "registerNewUser")
-      .callsFake((username, password) => {
-        return Promise.resolve({ username, password });
+      .callsFake((userData, password) => {
+        return Promise.resolve({ ...userData, password });
       });
   });
 
@@ -88,6 +88,7 @@ describe("API route '/api/signup'", function () {
         done();
       });
   });
+
   it("returns a non 400 status with five character password field", done => {
     appRequest
       .post("/api/signup")

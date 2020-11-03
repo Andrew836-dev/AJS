@@ -102,7 +102,7 @@ describe("Controller export", function () {
 
     it("Registers a new user", done => {
       controller
-        .registerNewUser(FIRST_USER.username, FIRST_USER.password)
+        .registerNewUser(FIRST_USER, FIRST_USER.password)
         .then(createdUser => {
           const nameReg = new RegExp(FIRST_USER.username);
           expect(createdUser.username).to.match(nameReg);
@@ -113,8 +113,8 @@ describe("Controller export", function () {
 
     it("Registers a second user when there is one already in the database", done => {
       controller
-        .registerNewUser(FIRST_USER.username, FIRST_USER.password)
-        .then(() => controller.registerNewUser(SECOND_USER.username, SECOND_USER.password))
+        .registerNewUser(FIRST_USER, FIRST_USER.password)
+        .then(() => controller.registerNewUser(SECOND_USER, SECOND_USER.password))
         .then(secondUser => {
           const nameReg = new RegExp(SECOND_USER);
           expect(secondUser.username).to.match(nameReg);
@@ -125,7 +125,7 @@ describe("Controller export", function () {
 
     it("Fails if the username field is empty", done => {
       controller
-        .registerNewUser("", FIRST_USER.password)
+        .registerNewUser({ username: "" }, FIRST_USER.password)
         .then(done)
         .catch(err => {
           expect(err).to.be.instanceOf(Error);
@@ -141,6 +141,16 @@ describe("Controller export", function () {
           expect(err).to.be.instanceOf(Error);
           done();
         });
+    });
+
+    it("Succeeds if the darkTheme option is absent", done => {
+      controller
+        .registerNewUser({ username: FIRST_USER.username }, FIRST_USER.password)
+        .then(response => {
+          expect(response.darkTheme).to.equal(true);
+          done();
+        })
+        .catch(done);
     });
   });
 });
