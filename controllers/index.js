@@ -56,6 +56,11 @@ async function updateLastLoginById (id) {
     .catch(err => Promise.reject(err));
 }
 
+async function updateProfileData (id, newData) {
+  return db.User.findByIdAndUpdate(id, newData, { new: true })
+    .catch(err => Promise.reject(err));
+}
+
 module.exports = {
   checkIfNameInUse,
   connect: (uri = MONGODB_URI, options = defaultMongoOptions) =>
@@ -70,5 +75,6 @@ module.exports = {
   registerNewCode,
   registerNewUser,
   updateCodeById,
-  updateLastLoginById
+  updateLastLoginById,
+  updateProfileData
 };

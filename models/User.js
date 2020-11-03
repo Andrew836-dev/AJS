@@ -12,6 +12,10 @@ const UserSchema = new Schema({
   displayName: {
     type: String
   },
+  darkTheme: {
+    type: Boolean,
+    default: true
+  },
   email: {
     type: String,
     validate: /.+@.+\..+/

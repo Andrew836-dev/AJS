@@ -15,12 +15,13 @@ module.exports = function (app) {
       passport.authenticate("local")
     ],
     (req, res) => {
-      controllers.updateLastLoginById(req.user._id);
+      const { _id, role, username } = req.user;
+      controllers.updateLastLoginById(_id);
       // Sending back a password, even a hashed password, isn't a good idea
       res.json({
-        role: req.user.role,
-        username: req.user.username,
-        id: req.user._id
+        role: role,
+        username: username,
+        id: _id
       });
     });
 
@@ -46,6 +47,29 @@ module.exports = function (app) {
         .catch(err => res.status(401).json(err));
     });
 
+  app.put("/api/user", (req, res) => {
+    const { user, body } = req;
+    if (!user) {
+      return res.status(401).send({});
+    }
+    if (!body) {
+      return res.status(400).send({});
+    }
+    controllers
+      .updateProfileData(user._id, body)
+      .then(dbUser => {
+        if (!dbUser) {
+          return res.status(404).send({});
+        }
+        // passport.serializeUser(dbUser)
+        res.send(dbUser);
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).end();
+      });
+  });
+
   // Route for logging user out
   app.get("/logout", (req, res) => {
     req.logout();
@@ -67,11 +91,12 @@ module.exports = function (app) {
   app.get("/api/user_data", (req, res) => {
     if (!req.user) {
       // The user is not logged in, send back the default GUEST options
-      res.json({ username: "", role: "GUEST", id: "" });
+      res.json({ darkTheme: true, username: "", role: "GUEST", id: "" });
     } else {
       // Otherwise send back the user's name and id
       // Sending back a password, even a hashed password, isn't a good idea
       res.json({
+        darkTheme: req.user.darkTheme,
         username: req.user.username,
         role: req.user.role,
         id: req.user._id
