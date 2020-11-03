@@ -32,6 +32,7 @@ function Editor() {
 
   useEffect(() => {
     if (!codeId) {
+      setAuthor(userState.id);
       if (history.location.state) {
         const { code } = history.location.state;
         setCodeState(code);
@@ -42,7 +43,6 @@ function Editor() {
         );
         setCodeState(initialCode);
       }
-      setAuthor(userState.id);
       // setLoading(false);
     } else if (codeId.length !== 24) {
       history.replace("/javascript", { code: `const invalidCodeId = ${codeId};\nconsole.log(invalidCodeId + "is not a valid code ID. Starting a new session");\n` });
@@ -82,14 +82,14 @@ function Editor() {
         .then(dbCode => {
           history.push("/javascript/" + dbCode._id)
         }).catch(dbErr => {
-          console.log(dbErr);
+          console.log("Error creating", dbErr);
           // setLoading(false);
         });
     }
     API.saveCode(codeId, codeToSave)
       // .then(() => setLoading(false))
       .catch(dbErr => {
-        console.log(dbErr);
+        console.log("Error saving", dbErr);
         // setLoading(false);
       });
   }

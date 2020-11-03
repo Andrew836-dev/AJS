@@ -80,7 +80,7 @@ module.exports = function (app) {
       } else {
         controllers.updateCodeById(req.params.id, req.body)
           .then(dbResponse => {
-            console.log("update", dbResponse);
+            // console.log("update", dbResponse);
             res.json(dbResponse);
           })
           .catch(err => {

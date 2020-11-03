@@ -33,7 +33,7 @@ function Register() {
         history.push("/profile/" + dbResponse.username, { message: `Hi ${dbResponse.username}! Welcome to AJS.` });
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error registering", err);
         userDispatch({ type: LOGOUT });
         setErrorStatus({ color: "red", message: username + " is already in use" });
       });
@@ -42,7 +42,6 @@ function Register() {
   return <>
     <Form
       value={formState}
-      onBlur={console.log}
       onChange={nextValue => setFormState(nextValue)}
       onSubmit={({ value }) => handleSubmit(value)}
     >

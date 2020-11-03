@@ -25,7 +25,7 @@ function Login() {
         history.push("/profile/" + dbResponse.username, { message: `Welcome back ${dbResponse.username}.` });
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error logging in", err);
         userDispatch({ type: LOGOUT });
         setErrorStatus({ color: "red", message: "Your name and/or password is incorrect" });
       });

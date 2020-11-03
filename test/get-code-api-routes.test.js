@@ -102,7 +102,6 @@ describe("Code API routes with fakes", function () {
         .get("/api/code")
         .end((err, res) => {
           if (err) done(err);
-          // console.log(res.body);
           expect(res.body).to.deep.equal([]);
           done();
         });

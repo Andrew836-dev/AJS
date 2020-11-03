@@ -51,7 +51,7 @@ function UserProfile(props) {
       .updateProfileData(newData)
       .then(dbUser => userDispatch({ type: LOGIN, ...dbUser }))
       .catch(err => {
-        console.log(err);
+        console.log("Error updating profile", err);
         userDispatch({ type: LOGOUT })
       });
   }
