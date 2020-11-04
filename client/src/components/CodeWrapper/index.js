@@ -1,12 +1,10 @@
 import React from "react";
-import { List } from "grommet";
 import CodeBlock from "../CodeBlock";
 
 function CodeWrapper({ code }) {
   if (code.error) return <p>{code.error}</p>
   if (!code.body) return <p>Loading</p>
   return (
-    <ul>
       <details>
         <summary>
           {code.type} : {code.sourceType}
@@ -14,7 +12,6 @@ function CodeWrapper({ code }) {
         {code.body
           && code.body.map((bodyObject, index) => <CodeBlock key={`${code.type}${index}`} code={bodyObject} />)}
       </details>
-    </ul>
   )
 }
 

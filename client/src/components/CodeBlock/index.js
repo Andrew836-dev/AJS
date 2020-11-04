@@ -1,4 +1,5 @@
 import React from "react";
+import ObjectBlock from "../ObjectBlock";
 
 const validCodeTypes = {
   EXPRESSION_STATEMENT: "ExpressionStatement",
@@ -33,7 +34,7 @@ function CodeBlock({ code }) {
           </ul>
         default:
           //console.log(code);
-          return <p>Expression, Note to self... write code for {code.expression.type}</p>;
+          return <ObjectBlock object={code} />;
       }
     case validCodeTypes.FUNCTION_DECLARATION:
       //console.log(code);
@@ -41,7 +42,7 @@ function CodeBlock({ code }) {
         <details>
           <summary>Function Declaration : {code.id ? code.id.name : "Anonymous"}</summary>
           <p>{`Parameters : ${code.params.length ? code.params.map(param => param.name).join(", ") : "None"}`}</p>
-          <CodeBlock code={code.body} />
+          <ObjectBlock object={code.body} />
         </details>
       </ul>;
     case validCodeTypes.VARIABLE_DECLARATION:
@@ -66,7 +67,12 @@ function CodeBlock({ code }) {
     case validCodeTypes.BLOCK_STATEMENT:
       return code.body.map((statement, index) => <CodeBlock key={index.toString() + statement.toString()} code={statement} />);
     default:
-      return <>Note to self... write code for  {code.type}</>;
+      return <ul>
+        <details>
+          <summary>{code.type}</summary>
+          <ObjectBlock object={code} />
+        </details>
+      </ul>;
   }
 }
 
