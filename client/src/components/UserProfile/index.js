@@ -58,9 +58,9 @@ function UserProfile(props) {
 
   return (!username
     ? <p>Can't show a profile without a name. Please log in or view someone elses profile</p>
-    : <Box fill overflow={{ vertical: "scroll" }}>
+    : <Box fill overflow={{ vertical: "scroll" }} justify="start">
       <Box direction="row" justify="center" margin={{ bottom: "1rem" }} pad="small">
-        <Box>
+        <Box margin={{ bottom: "1rem" }}>
           <Text>{viewerIsOwner && "Hello "}{profileData.username}</Text>
           <Text>Last Login: {moment(profileData.lastLogin).local().fromNow().toString()}</Text>
           <Text>Signup date: {moment(profileData.signupDate).local().format("ddd MMM Do YYYY").toString()}</Text>
@@ -74,13 +74,13 @@ function UserProfile(props) {
         </Box>
       </Box>
       <Box direction="row" justify="center">
-        <Box direction="column">
+        <Box margin={{ bottom: "1rem" }}>
           <p style={{ marginBottom: "1rem" }}>Saved Code: {snippetData.length}</p>
         </Box>
       </Box>
       <Box direction="row" justify="center">
         {!!snippetData.length && (
-          <Box>
+          <Box margin={{ top: "1rem" }}>
             {snippetData.map(snippet => <Grid key={snippet._id}
               rows={['xsmall', 'small']}
               columns={['small', 'medium']}
@@ -91,7 +91,7 @@ function UserProfile(props) {
                 { name: 'main', start: [1, 1], end: [1, 1] },
               ]}
             >
-              <Box gridArea="header" background="brand" pad={{ left: "1rem" }} margin={{ top: "1rem" }}>
+              <Box gridArea="header" background="brand" border={{ radius: "4px" }} pad={{ left: "1rem" }} margin={{ top: "1rem" }}>
                 <Paragraph>Language: {snippet.mode}</Paragraph>
                 <Paragraph margin={{ top: "0px" }}>Title: {snippet.title || "Untitled"}</Paragraph>
               </Box>

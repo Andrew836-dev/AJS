@@ -73,7 +73,7 @@ function Editor() {
   }, [codeId, history.location, userState.id, userState.darkTheme])
 
   function redirectWithCode(code) {
-    history.replace("/editor/" + mode, { code: code });
+    history.push("/editor/" + mode, { code: code });
   }
 
   function handleCodeChange(editor, change) {
@@ -117,11 +117,25 @@ function Editor() {
       <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
       <CheckBox label="Dark" checked={darkTheme} onClick={() => setDarkTheme(!darkTheme)} />
       <Box>
-        <Button icon={<New />} onClick={() => redirectWithCode("")} />
+        <Button
+          icon={<New />}
+          onClick={() => {
+            redirectWithCode("");
+            setReadOnly(false);
+            editorRef.current.editor.setOption("readOnly", false);
+          }}
+        />
         <Text size="small">New</Text>
       </Box>
       <Box>
-        <Button icon={<Copy />} onClick={() => redirectWithCode(codeState)} />
+        <Button 
+          icon={<Copy />} 
+          onClick={() => {
+            redirectWithCode(codeState);
+            setReadOnly(false);
+            editorRef.current.editor.setOption("readOnly", false);
+          }}
+          />
         <Text size="small">Fork</Text>
       </Box>
       <Box>
