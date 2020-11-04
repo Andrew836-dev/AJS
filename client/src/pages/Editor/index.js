@@ -96,7 +96,7 @@ function Editor() {
           // setLoading(false);
         });
     }
-    API.saveCode(codeId, codeToSave)
+    API.saveCode(codeId, {title, body: codeToSave})
       // .then(() => setLoading(false))
       .catch(dbErr => {
         console.log("Error saving", dbErr);
