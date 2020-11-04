@@ -112,36 +112,49 @@ function Editor() {
     mode: mode,
   }
   return <Box fill>
-    <Box direction="row" justify="end" margin={{ right: "small" }}>
-      <h3>Title: </h3>
-      <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
-      <CheckBox label="Dark" checked={darkTheme} onClick={() => setDarkTheme(!darkTheme)} />
+    <Box direction="row" justify="between">
+      <ResponsiveContext.Consumer>
+        {size => (size !== "small" && <Box></Box>)}
+      </ResponsiveContext.Consumer>
       <Box>
         <Button
           icon={<New />}
+          label="New"
+          plain
           onClick={() => {
             redirectWithCode("");
             setReadOnly(false);
             editorRef.current.editor.setOption("readOnly", false);
           }}
         />
-        <Text size="small">New</Text>
-      </Box>
-      <Box>
-        <Button 
-          icon={<Copy />} 
+        <Button
+          icon={<Copy />}
+          label="Copy"
+          plain
           onClick={() => {
             redirectWithCode(codeState);
             setReadOnly(false);
             editorRef.current.editor.setOption("readOnly", false);
           }}
-          />
-        <Text size="small">Fork</Text>
+        />
+        <Button
+          icon={<Save />}
+          label="Save"
+          plain
+          onClick={saveCode}
+          disabled={userState.role === GUEST || readOnly}
+        />
       </Box>
       <Box>
-        <Button icon={<Save />} onClick={saveCode} disabled={userState.role === GUEST || readOnly} />
-        <Text size="small">Save</Text>
+        <Box direction="row">
+          <h3 style={{ marginTop: "0px" }}>Title: </h3>
+          <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
+        </Box>
+        <CheckBox label="Dark" checked={darkTheme} onClick={() => setDarkTheme(!darkTheme)} />
       </Box>
+      <ResponsiveContext.Consumer>
+        {size => (size !== "small" && <Box></Box>)}
+      </ResponsiveContext.Consumer>
     </Box>
     <ResponsiveContext.Consumer>
       {size => (<Box direction="row-responsive" justify="center">
@@ -160,7 +173,7 @@ function Editor() {
         </Box>
       </Box>)}
     </ResponsiveContext.Consumer>
-  </Box>
+  </Box >
 }
 
 export default Editor;
