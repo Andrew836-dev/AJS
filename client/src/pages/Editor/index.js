@@ -129,7 +129,7 @@ function Editor() {
         />
         <Button
           icon={<Copy />}
-          label="Copy"
+          label="Fork"
           plain
           onClick={() => {
             redirectWithCode(codeState);
