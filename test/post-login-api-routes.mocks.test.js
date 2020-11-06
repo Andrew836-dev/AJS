@@ -30,7 +30,11 @@ describe("API route '/api/login' with mocked authentication", function () {
   it("returns status 200 with authentication success", done => {
     sinon
       .stub(mongoose.model("User"), "findByUsername")
-      .callsFake(() => Promise.resolve(mongoose.model("User")(FIRST_USER_SNAPSHOT)));
+      .callsFake(() => {
+        return mongoose
+          .model("User")(FIRST_USER)
+          .setPassword(FIRST_USER.password);
+      });
 
     appRequest
       .post("/api/login")
@@ -45,7 +49,11 @@ describe("API route '/api/login' with mocked authentication", function () {
   it("returns status 401 if the register function returns an error", done => {
     sinon
       .stub(mongoose.model("User"), "findByUsername")
-      .callsFake(() => Promise.resolve(mongoose.model("User")(FIRST_USER_SNAPSHOT)));
+      .callsFake(() => {
+        return mongoose
+          .model("User")(FIRST_USER)
+          .setPassword(FIRST_USER.password);
+      });
 
     appRequest
       .post("/api/login")
