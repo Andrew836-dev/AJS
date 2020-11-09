@@ -19,12 +19,12 @@ describe("API route '/api/login'", function () {
     appRequest.close();
   });
 
-  it("Doesn't return 404", done => {
+  it("returns status 400 with no body data", done => {
     appRequest
       .post("/api/login")
       .end((err, res) => {
         if (err) done(err);
-        expect(res).to.not.have.status(404);
+        expect(res).to.have.status(400);
         done();
       });
   });

@@ -123,7 +123,18 @@ describe("Controller export", function () {
         .catch(done);
     });
 
-    it("Fails if the username field is empty", done => {
+    it("Throws if the username is a duplicate of one already in the database", done => {
+      controller
+        .registerNewUser(FIRST_USER, FIRST_USER.password)
+        .then(() => controller.registerNewUser(FIRST_USER, SECOND_USER.password))
+        .then(done)
+        .catch((err) => {
+          expect(err).to.be.instanceOf(Error);
+          done();
+        });
+    });
+
+    it("Throws if the username field is empty", done => {
       controller
         .registerNewUser({ username: "" }, FIRST_USER.password)
         .then(done)
@@ -133,7 +144,7 @@ describe("Controller export", function () {
         });
     });
 
-    it("Fails if the password field is empty", done => {
+    it("Throws if the password field is empty", done => {
       controller
         .registerNewUser(FIRST_USER.username, "")
         .then(done)

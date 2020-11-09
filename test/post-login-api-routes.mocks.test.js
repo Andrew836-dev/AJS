@@ -7,7 +7,7 @@ const sinon = require("sinon");
 const mongoose = require("mongoose");
 
 chai.use(http);
-const { FIRST_USER, FIRST_USER_SNAPSHOT } = require("./testUsers.json");
+const { FIRST_USER } = require("./testUsers.json");
 
 const { expressApp } = require("../app");
 const appRequest = chai.request(expressApp);
@@ -20,6 +20,7 @@ describe("API route '/api/login' with mocked authentication", function () {
   });
 
   this.afterAll(() => {
+    sinon.reset();
     appRequest.close();
   });
 
@@ -46,7 +47,7 @@ describe("API route '/api/login' with mocked authentication", function () {
       });
   });
 
-  it("returns status 401 if the register function returns an error", done => {
+  it("returns status 401 if the password doesn't match", done => {
     sinon
       .stub(mongoose.model("User"), "findByUsername")
       .callsFake(() => {
