@@ -32,7 +32,7 @@ async function getCodeById (id) {
 }
 
 async function getUserByName (username) {
-  return db.User.findByUserName(username);
+  return db.User.findByUsername(username);
 }
 
 async function registerNewCode (authorId, codeObject) {
