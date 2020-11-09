@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const { PASSWORD_MIN_LENGTH } = require("../config/constants");
+const { GUEST_OBJECT, PASSWORD_MIN_LENGTH } = require("../config/constants");
 // Requiring our models and passport as we've configured it
 const controllers = require("../controllers");
 const passport = require("../config/passport");
@@ -15,10 +15,11 @@ module.exports = function (app) {
       passport.authenticate("local")
     ],
     (req, res) => {
-      const { _id, role, username } = req.user;
+      const { _id, role, username, darkTheme } = req.user;
       controllers.updateLastLoginById(_id);
       // Sending back a password, even a hashed password, isn't a good idea
       res.json({
+        darkTheme: darkTheme,
         role: role,
         username: username,
         id: _id
@@ -75,7 +76,7 @@ module.exports = function (app) {
   // Route for logging user out
   app.get("/logout", (req, res) => {
     req.logout();
-    res.redirect("/");
+    res.send({ message: "You have logged out" });
   });
 
   app.get("/api/profile/:username", (req, res) => {
@@ -93,7 +94,7 @@ module.exports = function (app) {
   app.get("/api/user_data", (req, res) => {
     if (!req.user) {
       // The user is not logged in, send back the default GUEST options
-      res.json({ darkTheme: true, username: "", role: "GUEST", id: "" });
+      res.json(GUEST_OBJECT);
     } else {
       // Otherwise send back the user's name and id
       // Sending back a password, even a hashed password, isn't a good idea
