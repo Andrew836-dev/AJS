@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+const { body, validationResult, param } = require("express-validator");
 const { GUEST_OBJECT, PASSWORD_MIN_LENGTH } = require("../config/constants");
 // Requiring our models and passport as we've configured it
 const controllers = require("../controllers");
@@ -79,7 +79,16 @@ module.exports = function (app) {
     res.send({ message: "You have logged out" });
   });
 
-  app.get("/api/profile/:username", (req, res) => {
+  app.get([
+    "/api/profile",
+    "/api/profile/:username"
+  ], [
+    param("username").trim().notEmpty().escape()
+  ], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors });
+    }
     const usernameParam = req.params.username;
     controllers.getUserByName(usernameParam)
       .then(dbUser => {
