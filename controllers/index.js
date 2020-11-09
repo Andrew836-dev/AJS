@@ -32,7 +32,7 @@ async function getCodeById (id) {
 }
 
 async function getUserByName (username) {
-  return db.User.findOne({ username });
+  return db.User.findByUserName(username);
 }
 
 async function registerNewCode (authorId, codeObject) {
@@ -40,10 +40,7 @@ async function registerNewCode (authorId, codeObject) {
 }
 
 async function registerNewUser (userData, password) {
-  return db.User.create(userData)
-    .then(newUser => newUser.setPassword(password))
-    .then(saltedUser => saltedUser.save())
-    .catch(err => Promise.reject(err));
+  return db.User.register(userData, password);
 }
 
 async function updateCodeById (codeId, codeObject) {
