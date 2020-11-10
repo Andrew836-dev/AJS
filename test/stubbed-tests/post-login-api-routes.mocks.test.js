@@ -7,9 +7,9 @@ const sinon = require("sinon");
 const mongoose = require("mongoose");
 
 chai.use(http);
-const { FIRST_USER } = require("./testUsers.json");
+const { FIRST_USER } = require("../testUsers.json");
 
-const { expressApp } = require("../app");
+const { expressApp } = require("../../app");
 const appRequest = chai.request(expressApp);
 
 describe("API route '/api/login' with mocked authentication", function () {

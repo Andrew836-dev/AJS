@@ -1,16 +1,23 @@
 /* eslint-disable no-undef */
-const controller = require("../controllers");
+const controller = require("../../controllers");
 const mongoose = require("mongoose");
 
-const { FIRST_USER, SECOND_USER } = require("./testUsers.json");
+const { FIRST_USER, SECOND_USER } = require("../testUsers.json");
 const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI || "mongodb://localhost/test";
 const defaultMongoOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 const chai = require("chai");
 const expect = chai.expect;
 
 describe("Controller export", function () {
-  this.afterAll(() => {
-    mongoose.disconnect();
+  this.beforeAll(done => {
+    mongoose
+      .disconnect()
+      .then(() => done());
+  });
+  this.afterAll(done => {
+    mongoose
+      .disconnect()
+      .then(() => done());
   });
 
   describe("getHostString() function", function () {

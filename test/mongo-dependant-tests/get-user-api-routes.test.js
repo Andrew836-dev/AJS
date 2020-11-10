@@ -5,13 +5,13 @@ const { expect } = chai;
 
 chai.use(chaiHttp);
 
-const { expressApp } = require("../app");
+const { expressApp } = require("../../app");
 const appRequest = chai.request(expressApp);
 
-const db = require("../controllers");
+const db = require("../../controllers");
 
-const { FIRST_USER } = require("./testUsers.json");
-const { GUEST_OBJECT } = require("../config/constants");
+const { FIRST_USER } = require("../testUsers.json");
+const { GUEST_OBJECT } = require("../../config/constants");
 
 describe("User GET API routes", function () {
   this.beforeAll(done => {
@@ -20,6 +20,7 @@ describe("User GET API routes", function () {
   });
 
   this.afterAll(() => {
+    db.disconnect();
     appRequest.close();
   });
 

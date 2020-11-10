@@ -3,14 +3,14 @@ const chai = require("chai");
 const http = require("chai-http");
 const { expect } = chai;
 
-const { FIRST_USER } = require("./testUsers.json");
-const { FIRST_SNIPPET } = require("./testSnippets.json");
+const { FIRST_USER } = require("../testUsers.json");
+const { FIRST_SNIPPET } = require("../testSnippets.json");
 
 chai.use(http);
-const { expressApp } = require("../app");
+const { expressApp } = require("../../app");
 const appRequest = chai.request(expressApp);
 const sinon = require("sinon");
-const controllers = require("../controllers");
+const controllers = require("../../controllers");
 
 describe("Code API routes with fakes", function () {
   this.beforeAll(done => {
