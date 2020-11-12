@@ -59,6 +59,7 @@ describe("User GET API routes", function () {
       db
         .connect("mongodb://localhost/test")
         .then(connection => connection.model("User").collection.drop())
+        .catch(() => { /* This stops the test from failing if collection doesn't exist */ })
         .then(() => db.registerNewUser(FIRST_USER, FIRST_USER.password))
         .then(() => done());
     });
