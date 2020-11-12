@@ -6,9 +6,18 @@
       "const greeting = \"Hello World!\";",
       "console.log(greeting);"
     ],
-    "_id": "5f9663ccc68c573fa08df9c3",
     "author": "5f94d9a285ac4a22f0361331",
     "createdAt": "2020-10-26T05:51:08.107Z",
     "lastEdited": "2020-10-26T05:51:08.107Z"
+  },
+  "SECOND_SNIPPET": {
+    "mode": "markdown",
+    "title": "Hello Markdown!",
+    "body": [
+      "# Title text!"
+    ],
+    "author": "5f94d9a285ac4a22f0361331",
+    "createdAt": "2020-10-30T05:51:08.107Z",
+    "lastEdited": "2020-10-30T05:51:08.107Z"
   }
 }
