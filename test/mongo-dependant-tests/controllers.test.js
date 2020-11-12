@@ -3,6 +3,7 @@ const controller = require("../../controllers");
 const mongoose = require("mongoose");
 
 const { FIRST_USER, SECOND_USER } = require("../testUsers.json");
+const { FIRST_SNIPPET, SECOND_SNIPPET } = require("../testSnippets.json");
 const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI || "mongodb://localhost/test";
 const defaultMongoOptions = { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true };
 const chai = require("chai");
@@ -103,7 +104,7 @@ describe("Controller export", function () {
       mongoose.connection.dropCollection("users")
         .then(() => done())
         // this needs to be handled to prevent the test crashing
-        // the actual error isn't a problem
+        // the actual error is a due to the collection not existing, which isn't a problem
         .catch(() => done());
     });
 
@@ -166,6 +167,80 @@ describe("Controller export", function () {
         .registerNewUser({ username: FIRST_USER.username }, FIRST_USER.password)
         .then(response => {
           expect(response.darkTheme).to.equal(true);
+          done();
+        })
+        .catch(done);
+    });
+  });
+  describe("checkIfNameInUse() function", function () {
+    this.beforeAll(done => {
+      mongoose
+        .connect(TEST_MONGODB_URI, defaultMongoOptions)
+        .then(() => done())
+        .catch(done);
+    });
+
+    this.beforeEach(done => {
+      mongoose.connection.dropCollection("users")
+        .then(() => done())
+        // this needs to be handled to prevent the test crashing
+        // the actual error is a due to the collection not existing, which isn't a problem
+        .catch(() => done());
+    });
+
+    it("returns a boolean true if name is in database", done => {
+      controller
+        .registerNewUser(FIRST_USER, FIRST_USER.password)
+        .then(() => controller.checkIfNameInUse(FIRST_USER.username))
+        .then(dbRes => {
+          expect(dbRes).to.deep.equal(true);
+          done();
+        })
+        .catch(done);
+    });
+
+    it("returns a boolean false if name is not in database", done => {
+      controller
+        .checkIfNameInUse(FIRST_USER.username)
+        .then(dbRes => {
+          expect(dbRes).to.deep.equal(false);
+          done();
+        })
+        .catch(done);
+    });
+  });
+  describe("getCode() function", function () {
+    this.beforeAll(done => {
+      mongoose
+        .connect(TEST_MONGODB_URI, defaultMongoOptions)
+        .then(() => done())
+        .catch(done);
+    });
+
+    this.beforeEach(done => {
+      mongoose.connection.dropCollection("snippets")
+        .then(() => done())
+        // this needs to be handled to prevent the test crashing
+        // the actual error is a due to the collection not existing, which isn't a problem
+        .catch(() => done());
+    });
+
+    it("returns an array", done => {
+      controller
+        .getCode()
+        .then(dbRes => {
+          expect(dbRes).to.be.instanceOf(Array);
+          done();
+        });
+    });
+
+    it("returns snippets in reverse date order (newest first)", done => {
+      mongoose
+        .model("Snippet")
+        .insertMany([FIRST_SNIPPET, SECOND_SNIPPET])
+        .then(() => controller.getCode())
+        .then(dbRes => {
+          expect(dbRes[0].lastEdited).to.be.greaterThan(dbRes[1].lastEdited);
           done();
         })
         .catch(done);
