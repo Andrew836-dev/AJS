@@ -14,6 +14,18 @@ async function checkIfNameInUse (username) {
     .then(dbUser => !!dbUser);
 }
 
+async function deleteCodeByIdAndAuthor (codeId, userId) {
+  const dbSnippet = await getCodeById(codeId);
+  if (!dbSnippet) {
+    return { status: 404, deleted: false };
+  }
+  if (dbSnippet.author.toString() !== userId.toString()) {
+    return { status: 403, deleted: false };
+  }
+  dbSnippet.remove();
+  return { status: 200, deleted: true };
+}
+
 async function getCode () {
   return db.Snippet.find().sort({ lastEdited: -1 });
 }
@@ -43,8 +55,8 @@ async function registerNewUser (userData, password) {
   return db.User.register(userData, password);
 }
 
-async function updateCodeById (codeId, codeObject) {
-  return db.Snippet.findByIdAndUpdate(codeId, { ...codeObject, lastEdited: Date.now() });
+async function updateCodeByIdAndAuthor (codeId, codeObject, authorId) {
+  return db.Snippet.findOneAndUpdate({ _id: codeId, author: authorId }, { ...codeObject, lastEdited: Date.now() }, { new: true });
 }
 
 async function updateLastLoginById (id) {
@@ -62,6 +74,7 @@ module.exports = {
   checkIfNameInUse,
   connect: (uri = MONGODB_URI, options = defaultMongoOptions) =>
     mongoose.connect(uri, options),
+  deleteCodeByIdAndAuthor,
   disconnect: () => mongoose.disconnect(),
   getCode,
   getCodeByAuthorId,
@@ -71,7 +84,7 @@ module.exports = {
   getUserByName,
   registerNewCode,
   registerNewUser,
-  updateCodeById,
+  updateCodeByIdAndAuthor,
   updateLastLoginById,
   updateProfileData
 };

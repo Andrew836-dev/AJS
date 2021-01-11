@@ -1,6 +1,6 @@
 const controllers = require("../controllers");
 const { body, param, validationResult } = require("express-validator");
-const isAuthenticated = require("../config/middleware/isAuthenticated");
+// const isAuthenticated = require("../config/middleware/isAuthenticated");
 
 module.exports = function (app) {
   app.get(["/api/author", "/api/author/:name"],
@@ -56,37 +56,50 @@ module.exports = function (app) {
         });
     });
 
-  app.post("/api/code/:id",
+  app.post(["/api/code", "/api/code/:id"],
     [
-      isAuthenticated,
+      param("id").notEmpty(),
       body("title").isString(),
       body("mode").isString(),
       body("body").isArray()
     ]
     , (req, res) => {
+      if (!req.user) {
+        return res.status(401).json({ errors: ["Not logged in."] });
+      }
       const errors = validationResult(req);
-      if (!errors.isEmpty) {
-        res.status(400).json({ errors: errors.array() });
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
       }
       if (req.params.id === "new") {
         controllers.registerNewCode(req.user._id, req.body)
-          .then(dbResponse => {
-            res.json(dbResponse);
-          })
-          .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-          });
+          .then(dbResponse => res.json(dbResponse))
+          .catch(err => res.status(500).json(err));
       } else {
-        controllers.updateCodeById(req.params.id, req.body)
+        controllers.updateCodeByIdAndAuthor(req.params.id, req.body, req.user._id)
           .then(dbResponse => {
-            // console.log("update", dbResponse);
+            if (!dbResponse) res.status(403);
             res.json(dbResponse);
           })
-          .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-          });
+          .catch(err => res.status(500).json(err));
       }
     });
+
+  app.delete(["/api/code", "/api/code/:id"], [
+    param("id").isMongoId().notEmpty()
+  ], async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ errors: ["Not logged in."] });
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const dbResponse = await controllers.deleteCodeByIdAndAuthor(req.params.id, req.user._id).catch(() => false);
+    if (!dbResponse) {
+      return res.status(500).json({ errors: ["Server error"] });
+    }
+
+    res.status(dbResponse.status).json(dbResponse.deleted);
+  });
 };

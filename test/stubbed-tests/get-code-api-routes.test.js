@@ -12,7 +12,7 @@ const appRequest = chai.request(expressApp);
 const sinon = require("sinon");
 const controllers = require("../../controllers");
 
-describe("Code API routes with fakes", function () {
+describe("Code API GET routes with fakes", function () {
   this.beforeAll(done => {
     appRequest.keepOpen();
     sinon.createSandbox();
