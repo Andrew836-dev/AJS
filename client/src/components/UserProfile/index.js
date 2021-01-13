@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Paragraph, Text } from "grommet";
-import { View } from "grommet-icons";
+import { Box, Button, Text } from "grommet";
+import SnippetList from "../SnippetList";
 import API from "../../utils/API";
 import { useUserContext } from "../../utils/UserStore";
 import { LOADING, LOGIN, LOGOUT } from "../../utils/actions";
@@ -10,6 +10,7 @@ function UserProfile(props) {
   const { profileName: username } = props;
   const [userContext, userDispatch] = useUserContext();
   const [viewerIsOwner, setViewerIsOwner] = useState(false);
+  const [snippetData, setSnippetData] = useState([]);
   const [profileData, setProfileData] = useState({
     role: "GUEST",
     username: username || "",
@@ -17,7 +18,6 @@ function UserProfile(props) {
     lastLogin: "",
     darkTheme: true
   });
-  const [snippetData, setSnippetData] = useState([]);
 
   useEffect(() => {
     if (username) {
@@ -57,10 +57,10 @@ function UserProfile(props) {
   }
 
   return (!username
-    ? <p>Can't show a profile without a name. Please log in or view someone elses profile</p>
-    : <Box fill overflow={{ vertical: "scroll" }} justify="start">
-      <Box direction="row" justify="center" margin={{ bottom: "1rem" }} pad="small">
-        <Box margin={{ bottom: "1rem" }}>
+    ? <Text>Can't show a profile without a name. Please log in or view someone elses profile</Text>
+    : <Box fill overflow={{ vertical: "scroll" }}>
+      <Box height={{ min: "auto" }} direction="row" justify="center" pad="small">
+        <Box>
           <Text>{viewerIsOwner && "Hello "}{profileData.username}</Text>
           <Text>Last Login: {moment(profileData.lastLogin).local().fromNow().toString()}</Text>
           <Text>Signup date: {moment(profileData.signupDate).local().format("ddd MMM Do YYYY").toString()}</Text>
@@ -73,41 +73,13 @@ function UserProfile(props) {
           </>)}
         </Box>
       </Box>
-      <Box direction="row" justify="center">
-        <Box margin={{ bottom: "1rem" }}>
-          <p style={{ marginBottom: "1rem" }}>Saved Code: {snippetData.length}</p>
+      <Box height={{ min: "auto" }} direction="row" justify="center">
+        <Box>
+          <Text style={{ marginBottom: "1rem" }}>Saved Code: {snippetData.length}</Text>
         </Box>
       </Box>
-      <Box direction="row" justify="center">
-        {!!snippetData.length && (
-          <Box margin={{ top: "1rem" }}>
-            {snippetData.map(snippet => <Grid key={snippet._id}
-              rows={['xsmall', 'small']}
-              columns={['small', 'medium']}
-              gap="small"
-              areas={[
-                { name: 'header', start: [0, 0], end: [1, 0] },
-                { name: 'nav', start: [0, 1], end: [0, 1] },
-                { name: 'main', start: [1, 1], end: [1, 1] },
-              ]}
-            >
-              <Box gridArea="header" background="brand" border={{ radius: "4px" }} pad={{ left: "1rem" }} margin={{ top: "1rem" }}>
-                <Paragraph>Language: {snippet.mode}</Paragraph>
-                <Paragraph margin={{ top: "0px" }}>Title: {snippet.title || "Untitled"}</Paragraph>
-              </Box>
-              <Box gridArea="nav" direction="column" justify="center">
-                <Button
-                  icon={<View />}
-                  label={`${viewerIsOwner ? "Edit" : "View"} Snippet`}
-                  href={`/editor/${snippet.mode}/${snippet._id}`}
-                />
-              </Box>
-              <Box gridArea="main" direction="column" pad="small">
-                <Paragraph>First Line: {snippet.body[0]}</Paragraph>
-                <Paragraph>Last Edited: {moment(snippet.lastEdited).local().fromNow().toString()}</Paragraph>
-              </Box>
-            </Grid>)}
-          </Box>)}
+      <Box height={{ min: "auto" }} direction="row" justify="center">
+        {snippetData.length > 0 && <SnippetList data={snippetData} viewerIsOwner={viewerIsOwner} />}
       </Box>
     </Box>)
 }
