@@ -1,6 +1,13 @@
 import axios from "axios";
 
-const getCodebyId = codeId => {
+const deleteCodeById = codeId => {
+  return axios
+    .delete("/api/code/" + codeId)
+    .then(({ data }) => data)
+    .catch(Promise.reject);
+}
+
+const getCodeById = codeId => {
   return axios
     .get("/api/code/" + codeId)
     .then(({ data }) => data)
@@ -80,7 +87,8 @@ const userSignUp = ({ username, password, darkTheme }) => {
 }
 
 const API = {
-  getCodebyId,
+  deleteCodeById,
+  getCodebyId: getCodeById,
   getUserProfileData,
   getUserSessionData,
   getUserSnippets,
