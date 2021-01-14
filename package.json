@@ -12,7 +12,7 @@
     "install": "cd client && yarn install",
     "build": "cd client && yarn run build",
     "heroku-postbuild": "yarn run build",
-    "test": "mocha",
+    "test": "mocha && cd client && yarn test",
     "test:watch": "mocha --watch"
   },
   "author": "Andrew Gray",
