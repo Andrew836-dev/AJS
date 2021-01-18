@@ -8,3 +8,5 @@ cache:
     - node_modules
 services:
   - mongodb
+env:
+  - NODE_ENV=test
