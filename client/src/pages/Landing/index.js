@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { Box, Button } from "grommet";
 import { useUserContext } from "../../utils/UserStore";
 
-function Landing() {
+function Landing () {
   const [userState] = useUserContext();
   const history = useHistory();
   return <Box>
@@ -16,20 +16,19 @@ function Landing() {
           <li>If you choose to Sign in, you will be able to save code and share it with others.</li>
         </ul>
       </Box>
-      {!userState.username && (
-        <>
-          <Button label="Login" onClick={() => history.push("/login")} />
-          <Button label="Register" onClick={() => history.push("/register")} />
-        </>
-      )}
       <Button label="JavaScript Editor" onClick={() => history.push("/editor/javascript")} />
       <Button label="Markdown Editor" onClick={() => history.push("/editor/markdown")} />
-      {!!userState.username && (
-        <>
+      <Button label="Readme Generator" onClick={() => history.push("/readme-generator")} />
+      {!userState.username
+        ? (<>
+          <Button label="Login" onClick={() => history.push("/login")} />
+          <Button label="Register" onClick={() => history.push("/register")} />
+        </>)
+        : (<>
           <Button label="Your profile" onClick={() => history.push("/profile/" + userState.username)} />
           <Button label="Log Out" onClick={() => history.push("/logout")} />
-        </>
-      )}
+        </>)
+      }
     </Box>
   </Box>
 }

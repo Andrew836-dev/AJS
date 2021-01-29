@@ -74,6 +74,7 @@ function NavBar() {
               >
                 <NavLink to="/editor/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
                 <NavLink to="/editor/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
+                <NavLink to="/readme-generator" onClick={hideMenu}>Readme Generator</NavLink>
                 {userContext.username
                   ? <>
                     <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
@@ -107,6 +108,7 @@ function NavBar() {
                 >
                   <NavLink to="/editor/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
                   <NavLink to="/editor/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
+                  <NavLink to="/readme-generator" onClick={hideMenu}>Readme Generator</NavLink>
                   {userContext.username
                     ? <>
                       <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>

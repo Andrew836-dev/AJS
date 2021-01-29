@@ -14,6 +14,7 @@ import NavBar from "./components/NavBar";
 import Landing from "./pages/Landing";
 import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
+import ReadmeGenerator from "./pages/ReadmeGenerator";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Register from "./pages/Register";
@@ -44,6 +45,9 @@ function App() {
                   <Switch>
                     <Route exact path={["/editor/:language", "/editor/:language/:id"]}>
                       <Editor />
+                    </Route>
+                    <Route exact path="/readme-generator">
+                      <ReadmeGenerator />
                     </Route>
                     <Route exact path="/login">
                       <Login />
