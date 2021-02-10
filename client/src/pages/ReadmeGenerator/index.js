@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Box, Button, CheckBox, Form, FormField, Markdown, TextArea, TextInput } from "grommet";
-import { Clipboard, Copy } from "grommet-icons";
+import { Copy } from "grommet-icons";
+import ClipboardButton from "../../components/ClipboardButton";
 
-function ReadmeGenerator () {
+function ReadmeGenerator() {
   const history = useHistory();
   const [formState, setFormState] = useState({
     title: "",
@@ -14,17 +15,10 @@ function ReadmeGenerator () {
     contributors: "",
     license: ""
   });
-  const [clipboardState, setClipboardState] = useState("");
+
   const [previewState, setPreviewState] = useState("# Untitled");
 
-  async function clipboardCopy (copyText) {
-    try {
-      await navigator.clipboard.writeText(copyText);
-      setClipboardState("Copied to clipboard!");
-    } catch (err) {
-      setClipboardState("Failed to copy!");
-    }
-  }
+
 
   useEffect(() => {
     let outputText = `# ${formState.title ? formState.title : "Untitled"}`;
@@ -41,48 +35,50 @@ function ReadmeGenerator () {
     setPreviewState(outputText);
   }, [formState]);
 
-  return <Box direction="row-responsive">
-    <Form value={formState} onChange={nextValue => setFormState(nextValue)} >
-      <FormField label="Include Table of Contents" htmlFor="showContents">
-        <CheckBox name="showContents" />
-      </FormField>
-      <FormField label="Project Name" htmlFor="title">
-        <TextInput name="title" placeholder="Untitled" />
-      </FormField>
-      <FormField label="Description" htmlFor="description">
-        <TextArea name="description" />
-      </FormField>
-      <FormField label="Project Installation" htmlFor="installation">
-        <TextInput name="installation" />
-      </FormField>
-      <FormField label="Project Usage" htmlFor="usage">
-        <TextInput name="usage" />
-      </FormField>
-      <FormField label="Project Contributors" htmlFor="contributors">
-        <TextInput name="contributors" />
-      </FormField>
-      <FormField label="Project License" htmlFor="license">
-        <TextInput name="license" />
-      </FormField>
-    </Form>
-    <Box direction="column">
-      <Button icon={<Copy />}
-        label="Edit as text"
-        plain
-        onClick={() => history.push("/editor/markdown", { code: previewState })}
-      />
-      <Button icon={<Clipboard />}
-        label="Copy to clipboard"
-        plain
-        onClick={() => clipboardCopy(previewState)}
-      />
-      <Box>{clipboardState}</Box>
+  return <Box direction="row-responsive" alignContent="start" gap="small">
+    <Box width={{min: "360px"}}>
+      <Form value={formState} onChange={nextValue => setFormState(nextValue)} >
+        <FormField label="Include Table of Contents" htmlFor="showContents">
+          <CheckBox name="showContents" />
+        </FormField>
+        <FormField label="Project Name" htmlFor="title">
+          <TextInput name="title" placeholder="Untitled" />
+        </FormField>
+        <FormField label="Description" htmlFor="description">
+          <TextArea name="description" />
+        </FormField>
+        <FormField label="Project Installation" htmlFor="installation">
+          <TextInput name="installation" />
+        </FormField>
+        <FormField label="Project Usage" htmlFor="usage">
+          <TextInput name="usage" />
+        </FormField>
+        <FormField label="Project Contributors" htmlFor="contributors">
+          <TextInput name="contributors" />
+        </FormField>
+        <FormField label="Project License" htmlFor="license">
+          <TextInput name="license" />
+        </FormField>
+      </Form>
+    </Box>
+    <Box>
+      <Box direction="row" alignContent="start">
+        <Box gap="xxsmall">
+          <Button alignSelf="start"
+            icon={<Copy />}
+            label="Edit as text"
+            plain
+            onClick={() => history.push("/editor/markdown", { code: previewState })}
+          />
+          <ClipboardButton textContent={previewState} />
+        </Box>
+      </Box>
       <Markdown>{previewState}</Markdown>
     </Box>
   </Box>
 }
 
-function parseContentsList (contents) {
+function parseContentsList(contents) {
   return contents
     .map((title, index) => `${index + 1}. [${title}](#${title})`)
     .join("\n");

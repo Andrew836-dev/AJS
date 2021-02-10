@@ -8,7 +8,7 @@
 
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Box, Grommet } from "grommet";
+import { Box, Grommet, ResponsiveContext } from "grommet";
 import { UserProvider } from "./utils/UserStore";
 import NavBar from "./components/NavBar";
 import Landing from "./pages/Landing";
@@ -33,42 +33,47 @@ const theme = {
   },
 };
 
+
 function App() {
   return (
     <UserProvider>
-      <Grommet theme={theme} full>
-          <Router>
+      <Grommet theme={theme}>
+        <ResponsiveContext.Consumer>
+          {size => <Router>
             <Box fill>
               <NavBar />
               <Box direction='row' flex overflow={{ horizontal: 'hidden' }}>
                 <Box flex align='center' justify='center'>
-                  <Switch>
-                    <Route exact path={["/editor/:language", "/editor/:language/:id"]}>
-                      <Editor />
-                    </Route>
-                    <Route exact path="/readme-generator">
-                      <ReadmeGenerator />
-                    </Route>
-                    <Route exact path="/login">
-                      <Login />
-                    </Route>
-                    <Route exact path="/logout">
-                      <Logout />
-                    </Route>
-                    <Route exact path="/register">
-                      <Register />
-                    </Route>
-                    <Route exact path={["/profile", "/profile/:username"]}>
-                      <ProfileWrapper />
-                    </Route>
-                    <Route path="/">
-                      <Landing />
-                    </Route>
-                  </Switch>
+                  <Box fill pad={{ horizontal: size, top: "small" }} gap="xsmall">
+                    <Switch>
+                      <Route exact path={["/editor/:language", "/editor/:language/:id"]}>
+                        <Editor />
+                      </Route>
+                      <Route exact path="/readme-generator">
+                        <ReadmeGenerator />
+                      </Route>
+                      <Route exact path="/login">
+                        <Login />
+                      </Route>
+                      <Route exact path="/logout">
+                        <Logout />
+                      </Route>
+                      <Route exact path="/register">
+                        <Register />
+                      </Route>
+                      <Route exact path={["/profile", "/profile/:username"]}>
+                        <ProfileWrapper />
+                      </Route>
+                      <Route path="/">
+                        <Landing />
+                      </Route>
+                    </Switch>
+                  </Box>
                 </Box>
               </Box>
             </Box>
-          </Router>
+          </Router>}
+        </ResponsiveContext.Consumer>
       </Grommet>
     </UserProvider>
   );

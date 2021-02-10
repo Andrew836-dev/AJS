@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useUserContext } from "../../utils/UserStore";
 import { useParams, useHistory } from "react-router-dom";
 import {
@@ -7,7 +7,8 @@ import {
   CheckBox,
   Markdown,
   ResponsiveContext,
-  Text,
+  Tab,
+  Tabs,
   TextInput
 } from "grommet";
 import { Save, New, Copy } from "grommet-icons";
@@ -96,7 +97,7 @@ function Editor() {
           // setLoading(false);
         });
     }
-    API.saveCode(codeId, {title, body: codeToSave})
+    API.saveCode(codeId, { title, body: codeToSave })
       // .then(() => setLoading(false))
       .catch(dbErr => {
         console.log("Error saving", dbErr);
@@ -111,12 +112,11 @@ function Editor() {
     // keyMap: "sublime",
     mode: mode,
   }
-  return <Box fill>
-    <Box direction="row" justify="between">
-      <ResponsiveContext.Consumer>
-        {size => (size !== "small" && <Box></Box>)}
-      </ResponsiveContext.Consumer>
-      <Box>
+
+  const size = useContext(ResponsiveContext);
+  return <>
+    <Box direction="row" justify="start" gap="small" width="100%">
+      <Box margin={{ right: size }}>
         <Button
           icon={<New />}
           label="New"
@@ -148,17 +148,16 @@ function Editor() {
       <Box>
         <Box direction="row">
           <h3 style={{ marginTop: "0px" }}>Title: </h3>
-          <TextInput value={title} onChange={({ target }) => setTitle(target.value)} />
+          <TextInput disabled={userState.role === GUEST} value={title} onChange={({ target }) => setTitle(target.value)} />
         </Box>
         <CheckBox label="Dark" checked={darkTheme} onClick={() => setDarkTheme(!darkTheme)} />
       </Box>
-      <ResponsiveContext.Consumer>
-        {size => (size !== "small" && <Box></Box>)}
-      </ResponsiveContext.Consumer>
     </Box>
-    <ResponsiveContext.Consumer>
-      {size => (<Box direction="row-responsive" justify="center">
-        <Box width={size !== "small" ? "50%" : "100%"} height="50vh">
+    <Box>
+      <Box direction="row-responsive" width="100%" gap="small">
+        {/* <Tabs> */}
+        {/* <Tab title="Editor"> */}
+        <Box height="50vh" width={size !== "small" ? "50%" : "100%"}>
           <CodeMirror
             ref={editorRef}
             value={codeState}
@@ -166,14 +165,21 @@ function Editor() {
             onChange={handleCodeChange}
           />
         </Box>
-        <Box width={size !== "small" ? "45%" : "100%"}>
+        {/* </Tab> */}
+        {/* </Tab>
+              <Tab title="Reference">
+                Hints
+                </Tab>
+                {/* <Tab title="Preview"> */}
+        <Box width={size !== "small" ? "50%" : "100%"}>
           {mode === "markdown"
             ? <Markdown>{codeState}</Markdown>
             : <CodeWrapper code={safeParse(codeState)} />}
         </Box>
-      </Box>)}
-    </ResponsiveContext.Consumer>
-  </Box >
+        {/* </Tabs> */}
+      </Box>
+    </Box>
+  </>
 }
 
 export default Editor;
