@@ -15,7 +15,6 @@ import Landing from "./pages/Landing";
 import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
 import ReadmeGenerator from "./pages/ReadmeGenerator";
-import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Register from "./pages/Register";
 
@@ -51,9 +50,6 @@ function App() {
                       </Route>
                       <Route exact path="/readme-generator">
                         <ReadmeGenerator />
-                      </Route>
-                      <Route exact path="/login">
-                        <Login />
                       </Route>
                       <Route exact path="/logout">
                         <Logout />

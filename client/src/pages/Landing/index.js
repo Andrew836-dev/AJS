@@ -21,7 +21,7 @@ function Landing () {
       <Button label="Readme Generator" onClick={() => history.push("/readme-generator")} />
       {!userState.username
         ? (<>
-          <Button label="Login" onClick={() => history.push("/login")} />
+          {/* <Button label="Login" onClick={() => history.push("/login")} /> */}
           <Button label="Register" onClick={() => history.push("/register")} />
         </>)
         : (<>
