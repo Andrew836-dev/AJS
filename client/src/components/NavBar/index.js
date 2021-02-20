@@ -1,67 +1,76 @@
-import React, { useEffect, useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { useUserContext } from "../../utils/UserStore";
-
 import {
   Box,
-  Button,
-  Collapsible,
   Heading,
-  Layer,
-  ResponsiveContext
+  ResponsiveContext,
+  Text,
+  Menu,
+  Header
 } from "grommet";
-import { Menu, FormClose } from "grommet-icons";
-
+import LoginBox from "../LoginBox";
 import API from "../../utils/API";
 import { LOGIN, LOGOUT, LOADING } from "../../utils/actions";
 
 function NavBar() {
   const history = useHistory();
+  const location = useLocation();
   const [userContext, userDispatch] = useUserContext();
-  const [menuVisible, setMenuVisible] = useState(false);
-  const hideMenu = () => setMenuVisible(false);
-  const toggleMenuVisibility = () => setMenuVisible(!menuVisible);
+  // const [menuVisible, setMenuVisible] = useState(false);
+  const [locationNames, setLocationNames] = useState([]);
+  const maxNameQuantity = 2;
+  // const hideMenu = () => setMenuVisible(false);
+  // const toggleMenuVisibility = () => setMenuVisible(!menuVisible);
   const logout = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     userDispatch({ type: LOADING });
     API
       .userLogout()
       .then(() => {
         userDispatch({ type: LOGOUT })
-        history.push("/", { message: "You have logged out" })
+        // history.push("/", { message: "You have logged out" })
       });
   }
 
   useEffect(() => {
+    setLocationNames(location.pathname.split("/").filter(section => section));
+  }, [location.pathname]);
+
+  useEffect(() => {
+    let isLoaded = true;
     API
       .getUserSessionData()
       .then(userData => {
-        const keys = Object.keys(userData);
-        if (keys.some(key => userData[key] !== userContext[key])) {
-          userDispatch({
-            type: LOGIN,
-            ...userData
-          });
-        };
+        if (isLoaded) {
+          const keys = Object.keys(userData);
+          if (keys.some(key => userData[key] !== userContext[key])) {
+            userDispatch({
+              type: LOGIN,
+              ...userData
+            });
+          };
+        }
       })
       .catch(console.log);
+    return () => isLoaded = false;
   }, [userContext, userDispatch]);
 
-  return (
-    <Box
-      tag="header"
+  const size = useContext(ResponsiveContext);
+  return (<>
+    <Header
       direction="row"
-      align="center"
-      justify="between"
       background="brand"
-      pad={{ left: "medium", right: "small" }}
+      pad={{ horizontal: size, vertical: "xsmall" }}
       elevation="medium"
       style={{ zIndex: "1" }}
     >
+      {/*
       <Heading level="3" margin="none">
         <NavLink to="/" style={{ textDecoration: "none", color: "white" }} onClick={hideMenu}>AJS</NavLink>
-      </Heading>
-      <ResponsiveContext.Consumer>
+      </Heading> */}
+
+      {/* <ResponsiveContext.Consumer>
         {size => (<>
           {(!menuVisible || size !== "small") ? (
             <Collapsible direction="vertical" open={menuVisible}>
@@ -123,9 +132,36 @@ function NavBar() {
             )}
         </>
         )}
-      </ResponsiveContext.Consumer>
-      <Button icon={<Menu />} onClick={toggleMenuVisibility} />
-    </Box>)
+      </ResponsiveContext.Consumer> */}
+      {/* <Button icon={<Menu />} onClick={toggleMenuVisibility} />
+    </Box> */}
+      {/* <Collapsible direction="vertical" open={menuVisible}>
+      <Layer position="left">
+      <Sidebar>
+      <Anchor color="white" to="/editor/javascript">Javascript Editor</Anchor>
+        {/* <DropMenu> */}
+      <Menu
+        plain
+        label={<Heading level="3" margin="none" color="white">AJS</Heading>}
+        // dropAlign={{ top: "bottom" }}
+        items={[
+          { label: "Javascript Editor", onClick: () => history.push("/editor/javascript") },
+          { label: "Markdown Editor", onClick: () => history.push("/editor/markdown") },
+          { label: "Readme Generator", onClick: () => history.push("/readme-generator") },
+          { label: userContext.username ? 'Logout' : 'Register', onClick: () => userContext.username ? logout() : history.push("/register") },
+        ]}>
+      </Menu>
+      <Box direction="row">
+        {locationNames.slice(0, maxNameQuantity).map(locationName => <Box key={locationName} direction="row">/<Text>{locationName}</Text></Box>)}
+      </Box>
+      {userContext.username
+        ? (<Box onClick={() => history.push(`/profile/${userContext.username}`)}><Text size="large" weight="bold">
+          {userContext.username}
+        </Text></Box>)
+        :
+        <LoginBox />}
+    </Header>
+  </>)
 }
 
 export default NavBar;
