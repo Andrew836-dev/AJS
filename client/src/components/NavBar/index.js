@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { NavLink, useHistory, useLocation } from "react-router-dom";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { useUserContext } from "../../utils/UserStore";
 import {
   Box,
@@ -16,14 +16,11 @@ import { LOGIN, LOGOUT, LOADING } from "../../utils/actions";
 function NavBar() {
   const history = useHistory();
   const location = useLocation();
-  const [userContext, userDispatch] = useUserContext();
-  // const [menuVisible, setMenuVisible] = useState(false);
-  const [locationNames, setLocationNames] = useState([]);
-  const maxNameQuantity = 2;
-  // const hideMenu = () => setMenuVisible(false);
-  // const toggleMenuVisibility = () => setMenuVisible(!menuVisible);
+  const [userContext, importedUserDispatch] = useUserContext();
+  const userDispatch = useCallback(importedUserDispatch, []);
+
   const logout = (e) => {
-    // e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     userDispatch({ type: LOADING });
     API
       .userLogout()
@@ -33,6 +30,22 @@ function NavBar() {
       });
   }
 
+  function generateMenuItemArray(username) {
+    const output = []
+    output.push({ label: "Javascript Editor", onClick: () => history.push("/editor/javascript") });
+    output.push({ label: "Markdown Editor", onClick: () => history.push("/editor/markdown") });
+    output.push({ label: "Readme Generator", onClick: () => history.push("/readme-generator") });
+    if (username) {
+      output.push({ label: 'Profile', onClick: () => history.push("/profile/" + username) });
+      output.push({ label: 'Log out', onClick: logout });
+    } else {
+      output.push({ label: 'Register', onClick: () => history.push("/register") });
+    }
+    return output;
+  }
+
+  const [locationNames, setLocationNames] = useState([]);
+  const maxNameQuantity = 2;
   useEffect(() => {
     setLocationNames(location.pathname.split("/").filter(section => section));
   }, [location.pathname]);
@@ -43,8 +56,9 @@ function NavBar() {
       .getUserSessionData()
       .then(userData => {
         if (isLoaded) {
-          const keys = Object.keys(userData);
-          if (keys.some(key => userData[key] !== userContext[key])) {
+          const userDataKeys = Object.keys(userData);
+          // if any data in state doesn't match data from the server, replace state with server data
+          if (userDataKeys.some(key => userData[key] !== userContext[key])) {
             userDispatch({
               type: LOGIN,
               ...userData
@@ -65,99 +79,18 @@ function NavBar() {
       elevation="medium"
       style={{ zIndex: "1" }}
     >
-      {/*
-      <Heading level="3" margin="none">
-        <NavLink to="/" style={{ textDecoration: "none", color: "white" }} onClick={hideMenu}>AJS</NavLink>
-      </Heading> */}
-
-      {/* <ResponsiveContext.Consumer>
-        {size => (<>
-          {(!menuVisible || size !== "small") ? (
-            <Collapsible direction="vertical" open={menuVisible}>
-              <Box
-                width='small'
-                background='light-2'
-                elevation='small'
-                align='center'
-                justify='center'
-              >
-                <NavLink to="/editor/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
-                <NavLink to="/editor/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
-                <NavLink to="/readme-generator" onClick={hideMenu}>Readme Generator</NavLink>
-                {userContext.username
-                  ? <>
-                    <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
-                    <NavLink to="/" onClick={logout}>Log Out</NavLink>
-                  </>
-                  : <>
-                    <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
-                    <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>
-                  </>}
-              </Box>
-            </Collapsible>
-          ) : (
-              <Layer>
-                <Box
-                  background='light-2'
-                  tag='header'
-                  justify='end'
-                  align='center'
-                  direction='row'
-                >
-                  <Button
-                    icon={<FormClose />}
-                    onClick={hideMenu}
-                  />
-                </Box>
-                <Box
-                  fill
-                  background="light-2"
-                  align="center"
-                  justify="center"
-                >
-                  <NavLink to="/editor/javascript" onClick={hideMenu}>Javascript Editor</NavLink>
-                  <NavLink to="/editor/markdown" onClick={hideMenu}>Markdown Editor</NavLink>
-                  <NavLink to="/readme-generator" onClick={hideMenu}>Readme Generator</NavLink>
-                  {userContext.username
-                    ? <>
-                      <NavLink to={"/profile/" + userContext.username} onClick={hideMenu}>{userContext.username}</NavLink>
-                      <NavLink to="/" onClick={logout}>Log Out</NavLink>
-                    </>
-                    : <>
-                      <NavLink to="/register" onClick={hideMenu}>Register</NavLink>
-                      <NavLink to="/login" onClick={hideMenu}>Log In</NavLink>
-                    </>}
-                </Box>
-              </Layer>
-            )}
-        </>
-        )}
-      </ResponsiveContext.Consumer> */}
-      {/* <Button icon={<Menu />} onClick={toggleMenuVisibility} />
-    </Box> */}
-      {/* <Collapsible direction="vertical" open={menuVisible}>
-      <Layer position="left">
-      <Sidebar>
-      <Anchor color="white" to="/editor/javascript">Javascript Editor</Anchor>
-        {/* <DropMenu> */}
       <Menu
         plain
         label={<Heading level="3" margin="none" color="white">AJS</Heading>}
-        // dropAlign={{ top: "bottom" }}
-        items={[
-          { label: "Javascript Editor", onClick: () => history.push("/editor/javascript") },
-          { label: "Markdown Editor", onClick: () => history.push("/editor/markdown") },
-          { label: "Readme Generator", onClick: () => history.push("/readme-generator") },
-          { label: userContext.username ? 'Logout' : 'Register', onClick: () => userContext.username ? logout() : history.push("/register") },
-        ]}>
+        items={generateMenuItemArray(userContext.username)}>
       </Menu>
       <Box direction="row">
         {locationNames.slice(0, maxNameQuantity).map(locationName => <Box key={locationName} direction="row">/<Text>{locationName}</Text></Box>)}
       </Box>
       {userContext.username
-        ? (<Box onClick={() => history.push(`/profile/${userContext.username}`)}><Text size="large" weight="bold">
-          {userContext.username}
-        </Text></Box>)
+        ? (<Box onClick={() => history.push(`/profile/${userContext.username}`)}>
+          <Text size="large" weight="bold">{userContext.username}</Text>
+        </Box>)
         :
         <LoginBox />}
     </Header>
