@@ -15,7 +15,6 @@ import Landing from "./pages/Landing";
 import ProfileWrapper from "./pages/ProfileWrapper";
 import Editor from "./pages/Editor";
 import ReadmeGenerator from "./pages/ReadmeGenerator";
-import Logout from "./pages/Logout";
 import Register from "./pages/Register";
 
 const theme = {
@@ -50,9 +49,6 @@ function App() {
                       </Route>
                       <Route exact path="/readme-generator">
                         <ReadmeGenerator />
-                      </Route>
-                      <Route exact path="/logout">
-                        <Logout />
                       </Route>
                       <Route exact path="/register">
                         <Register />
