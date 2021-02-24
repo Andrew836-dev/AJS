@@ -17,6 +17,7 @@ function NavBar() {
   const history = useHistory();
   const location = useLocation();
   const [userContext, importedUserDispatch] = useUserContext();
+  const [loginVisible, setLoginVisible] = useState(false);
   const userDispatch = useCallback(importedUserDispatch, []);
 
   const logout = (e) => {
@@ -36,12 +37,17 @@ function NavBar() {
     output.push({ label: "Markdown Editor", onClick: () => history.push("/editor/markdown") });
     output.push({ label: "Readme Generator", onClick: () => history.push("/readme-generator") });
     if (username) {
-      output.push({ label: 'Profile', onClick: () => history.push("/profile/" + username) });
-      output.push({ label: 'Log out', onClick: logout });
+      output.push({ label: "Profile", onClick: () => history.push("/profile/" + username) });
+      output.push({ label: "Log out", onClick: logout });
     } else {
-      output.push({ label: 'Register', onClick: () => history.push("/register") });
+      output.push({ label: "Login", onClick: () => setLoginVisible(visible => !visible) });
+      output.push({ label: "Register", onClick: () => history.push("/register") });
     }
     return output;
+  }
+
+  function hideLogin() {
+    setLoginVisible(() => false);
   }
 
   const [locationNames, setLocationNames] = useState([]);
@@ -59,6 +65,7 @@ function NavBar() {
           const userDataKeys = Object.keys(userData);
           // if any data in state doesn't match data from the server, replace state with server data
           if (userDataKeys.some(key => userData[key] !== userContext[key])) {
+            hideLogin();
             userDispatch({
               type: LOGIN,
               ...userData
@@ -87,13 +94,11 @@ function NavBar() {
       <Box direction="row">
         {locationNames.slice(0, maxNameQuantity).map(locationName => <Box key={locationName} direction="row">/<Text>{locationName}</Text></Box>)}
       </Box>
-      {userContext.username
-        ? (<Box onClick={() => history.push(`/profile/${userContext.username}`)}>
-          <Text size="large" weight="bold">{userContext.username}</Text>
-        </Box>)
-        :
-        <LoginBox />}
+      <Box onClick={() => (userContext.username ? history.push(`/profile/${userContext.username}`) : setLoginVisible(prev => !prev))}>
+        <Text size="large" weight="bold">{userContext.username ? userContext.username : "Login"}</Text>
+      </Box>
     </Header>
+    {loginVisible && <LoginBox hideLogin={hideLogin} />}
   </>)
 }
 

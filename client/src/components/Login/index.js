@@ -4,7 +4,7 @@ import { useUserContext } from "../../utils/UserStore";
 import API from "../../utils/API";
 import { LOGIN, LOADING, LOGOUT } from "../../utils/actions";
 
-function Login() {
+function Login({ hideLogin }) {
   const [errorStatus, setErrorStatus] = useState({ color: "none", message: "" });
   const [value, setValue] = useState({ username: "", password: "" });
   const [userContext, userDispatch] = useUserContext();
@@ -20,6 +20,7 @@ function Login() {
       .then(dbResponse => {
         userDispatch({ ...dbResponse, type: LOGIN });
         // setErrorStatus({ color: "green", message: "Successfully logged in" });
+        if (hideLogin) hideLogin();
         // history.push("/profile/" + dbResponse.username, { message: `Welcome back ${dbResponse.username}.` });
       })
       .catch(err => {

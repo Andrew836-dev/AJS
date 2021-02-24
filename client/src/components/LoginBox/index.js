@@ -1,22 +1,21 @@
-import React, { useRef, useState } from "react"
-import { Box, Drop, Text } from "grommet";
+import React from "react"
+import { Box, Layer } from "grommet";
+import { Close } from "grommet-icons";
 import Login from "../Login";
 
-function LoginBox() {
-  const [loginVisible, setLoginVisible] = useState(false);
-  const baseRef = useRef();
-  return (<Box ref={baseRef} width="xxsmall" alignSelf={loginVisible ? "end" : "center"}>
-    {(loginVisible
-      ? (<Drop target={baseRef.current} onClickOutside={() => setLoginVisible(false)} align={{ top: "bottom", right: "right" }}>
-        <Box width="medium" pad="medium" background="transparent" align="center">
-          {/* {size === "small" && <Box alignSelf="end" direction="row-reverse" pad={{ right: "medium", top: "medium" }}><Box onClick={() => setLoginVisible(false)}>X</Box></Box>} */}
-          <Login />
+function LoginBox({ hideLogin }) {
+  return (<Layer onClickOutside={hideLogin}>
+    <Box pad="small">
+      {!!hideLogin && <Box direction="row" justify="end">
+        <Box onClick={hideLogin}>
+          <Close />
         </Box>
-      </Drop>)
-      : (<Box onClick={() => setLoginVisible(true)}>
-        <Text alignSelf="center" weight="bold">Login</Text>
-      </Box>))}
-  </Box>);
+      </Box>}
+      <Box width="medium" height="medium" pad="medium" align="center">
+        <Login hideLogin={hideLogin} />
+      </Box>
+    </Box>
+  </Layer>);
 }
 
 export default LoginBox;
